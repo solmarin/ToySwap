@@ -77,7 +77,7 @@ public class FrmPublicacion {
 		//Logo
 			JLabel JLImagen = new JLabel();
 			JLImagen.setBorder(null);
-			JLImagen.setBounds(1194, 0, 82, 74);
+			JLImagen.setBounds(1184, 0, 82, 74);
 			ImageIcon logo = new ImageIcon(FrmInicio.class.getResource("/res/logo.PNG"));
 			Icon iLogo = new ImageIcon(logo.getImage().getScaledInstance(JLImagen.getWidth(), JLImagen.getHeight(), Image.SCALE_DEFAULT ));
 			JLImagen.setIcon(iLogo);

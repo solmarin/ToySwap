@@ -78,7 +78,7 @@ public class FrmOAbierta {
 		//Logo
 			JLabel JLImagen = new JLabel();
 			JLImagen.setBorder(null);
-			JLImagen.setBounds(1194, 0, 82, 74);
+			JLImagen.setBounds(1184, 0, 82, 74);
 			ImageIcon logo = new ImageIcon(FrmInicio.class.getResource("/res/logo.PNG"));
 			Icon iLogo = new ImageIcon(logo.getImage().getScaledInstance(JLImagen.getWidth(), JLImagen.getHeight(), Image.SCALE_DEFAULT ));
 			JLImagen.setIcon(iLogo);
@@ -105,7 +105,7 @@ public class FrmOAbierta {
 			JLOAbierta.setOpaque(true);
 			JLOAbierta.setBackground(Color.WHITE);
 			JLOAbierta.setForeground((new Color(139, 196, 68)));
-			JLOAbierta.setBounds(0, 0, 1194, 74);
+			JLOAbierta.setBounds(0, 0, 1185, 74);
 			JLOAbierta.setBorder(border);
 			frame.getContentPane().add(JLOAbierta);
 			
