@@ -36,8 +36,9 @@ public class FrmOCerrada {
 		private JTextField TFFecha;
 		private JTextField TFCategoria;
 		private JTextField TFEstado;
-		private Object[] titulos = {"PRODUCTO", "DESCRIPCIÓN", "FECHA","CATEGORIA","ESTADO"};
+		private Object[] titulos = {"ID", "PRODUCTO", "DESCRIPCIÓN", "FECHA","CATEGORIA","ESTADO"};
 		private Object[] celdas = {};
+		private JTextField TFId;
 
 
 	/**
@@ -124,7 +125,7 @@ public class FrmOCerrada {
 			TFNombre.setFont(new Font("Tahoma", Font.PLAIN, 16));
 			TFNombre.setText("Coche");
 			TFNombre.setEditable(false);
-			TFNombre.setBounds(108, 511, 190, 59);
+			TFNombre.setBounds(276, 511, 177, 59);
 			frame.getContentPane().add(TFNombre);
 			TFNombre.setColumns(10);
 			
@@ -134,7 +135,7 @@ public class FrmOCerrada {
 			TFDescripcion.setHorizontalAlignment(SwingConstants.CENTER);
 			TFDescripcion.setEditable(false);
 			TFDescripcion.setColumns(10);
-			TFDescripcion.setBounds(297, 511, 190, 59);
+			TFDescripcion.setBounds(463, 511, 190, 59);
 			frame.getContentPane().add(TFDescripcion);
 			
 			TFFecha = new JTextField();
@@ -143,7 +144,7 @@ public class FrmOCerrada {
 			TFFecha.setText("2020/01/11");
 			TFFecha.setEditable(false);
 			TFFecha.setColumns(10);
-			TFFecha.setBounds(485, 511, 190, 59);
+			TFFecha.setBounds(663, 511, 139, 59);
 			frame.getContentPane().add(TFFecha);
 			
 			TFCategoria = new JTextField();
@@ -152,7 +153,7 @@ public class FrmOCerrada {
 			TFCategoria.setText("Mu\u00F1eco");
 			TFCategoria.setEditable(false);
 			TFCategoria.setColumns(10);
-			TFCategoria.setBounds(674, 511, 190, 59);
+			TFCategoria.setBounds(812, 511, 126, 59);
 			frame.getContentPane().add(TFCategoria);
 			
 			TFEstado = new JTextField();
@@ -161,8 +162,17 @@ public class FrmOCerrada {
 			TFEstado.setHorizontalAlignment(SwingConstants.CENTER);
 			TFEstado.setEditable(false);
 			TFEstado.setColumns(10);
-			TFEstado.setBounds(858, 511, 190, 59);
+			TFEstado.setBounds(948, 511, 146, 59);
 			frame.getContentPane().add(TFEstado);
+			
+			TFId = new JTextField();
+			TFId.setText("1");
+			TFId.setHorizontalAlignment(SwingConstants.CENTER);
+			TFId.setFont(new Font("Tahoma", Font.PLAIN, 16));
+			TFId.setEditable(false);
+			TFId.setColumns(10);
+			TFId.setBounds(151, 511, 115, 59);
+			frame.getContentPane().add(TFId);
 			
 		//Boton
 			JButton btnEnviar = new JButton("ENVIAR");
@@ -170,7 +180,7 @@ public class FrmOCerrada {
 			btnEnviar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 18));
 			btnEnviar.setBorder(UIManager.getBorder("Button.border"));
 			btnEnviar.setBackground(new Color(52, 77, 160));
-			btnEnviar.setBounds(1070, 502, 126, 74);
+			btnEnviar.setBounds(1122, 502, 126, 74);
 			frame.getContentPane().add(btnEnviar);
 			
 		//Tabla con scroll
@@ -187,7 +197,7 @@ public class FrmOCerrada {
 				};
 				
 			model.setColumnIdentifiers(titulos);
-			model.addRow(new Object[] {"COD","JUEGO DE PS4","2020/02/10","PS4","2 mano"}); //ejemplo de campos
+			model.addRow(new Object[] {"2", "COD","JUEGO DE PS4","2020/02/10","PS4","2 mano"}); //ejemplo de campos
 			JTable table = new JTable();
 			table.setShowVerticalLines(false);
 			table.setGridColor(Color.white);
@@ -201,6 +211,8 @@ public class FrmOCerrada {
 			scroll.setBounds(128, 141, 700, 283);;
 			table.setBackground(Color.white);
 			frame.getContentPane().add(scroll);
+			
+			
 			
 		
 	}

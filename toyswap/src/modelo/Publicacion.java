@@ -1,8 +1,11 @@
 package modelo;
+
+import java.util.Calendar;
+
 /**
  * Clase para definir la estructura de las publicaciones.
  * @author Sol Marín
- * @version 1
+ * @version 1.5
  *
  */
 public class Publicacion {
@@ -16,20 +19,29 @@ public class Publicacion {
 		private String categoria;
 		
 	//Constructor/es
-		public Publicacion(int id, String dni, String nombre, String descripcion, String estado, String fecha,
-				String categoria) {
+		public Publicacion(String dni, String nombre, String descripcion, String estado, String categoria) {
 			super();
+			this.dni = dni;
+			this.nombre = nombre;
+			this.descripcion = descripcion;
+			this.estado = estado;
+			this.categoria = categoria;
+			this.setFecha();
+		}
+		
+		//constructor consulta sql
+		public Publicacion(int id, String dni, String nombre, String descripcion, String estado, String fecha, String categoria) {
 			this.id = id;
 			this.dni = dni;
 			this.nombre = nombre;
 			this.descripcion = descripcion;
 			this.estado = estado;
-			this.fecha = fecha;
 			this.categoria = categoria;
+			this.fecha = fecha;
 		}
 		
-	//Métodos
-		
+	//Metodos
+
 		public int getId() {
 			return id;
 		}
@@ -63,8 +75,17 @@ public class Publicacion {
 		public String getFecha() {
 			return fecha;
 		}
-		public void setFecha(String fecha) {
-			this.fecha = fecha;
+		public void setFecha() {
+			Calendar cal;
+			String sFecha;
+			
+			cal = Calendar.getInstance();
+			
+			sFecha = Integer.toString(cal.get(Calendar.YEAR))+"/"
+					+ Integer.toString(cal.get(Calendar.MONTH))+"/"
+					+ Integer.toString(cal.get(Calendar.DATE))+" ";
+			
+			this.fecha = sFecha;
 		}
 		public String getCategoria() {
 			return categoria;
@@ -72,12 +93,14 @@ public class Publicacion {
 		public void setCategoria(String categoria) {
 			this.categoria = categoria;
 		}
-		
+
 		@Override
 		public String toString() {
 			return "Publicacion [id=" + id + ", dni=" + dni + ", nombre=" + nombre + ", descripcion=" + descripcion
-					+ ", estado=" + estado + ", fecha=" + fecha + ", categoria=" + categoria + "]";
+					+ ", estado=" + estado + ", fecha=" + fecha + ", categoria=" + categoria + "]\n";
 		}
+		
+		
 		
 		
 

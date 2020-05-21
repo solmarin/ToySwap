@@ -23,7 +23,7 @@ import javax.swing.JTextField;
 /**
  * Clase para definir el diseño de la pantalla de ofertas abiertas.
  * @author Sol Marín
- * @version 1
+ * @version 1.5
  *
  */
 public class FrmOAbierta {
@@ -34,6 +34,7 @@ public class FrmOAbierta {
 		private JTextField TFFecha;
 		private JTextField TFCategoria;
 		private JTextField TFEstado;
+		private JTextField TFId;
 
 	/**
 	 * Launch the application.
@@ -131,7 +132,7 @@ public class FrmOAbierta {
 			TFNombre.setFont(new Font("Tahoma", Font.PLAIN, 16));
 			TFNombre.setText("Coche");
 			TFNombre.setEditable(false);
-			TFNombre.setBounds(108, 511, 190, 59);
+			TFNombre.setBounds(258, 511, 161, 59);
 			frame.getContentPane().add(TFNombre);
 			TFNombre.setColumns(10);
 			
@@ -141,7 +142,7 @@ public class FrmOAbierta {
 			TFDescripcion.setHorizontalAlignment(SwingConstants.CENTER);
 			TFDescripcion.setEditable(false);
 			TFDescripcion.setColumns(10);
-			TFDescripcion.setBounds(297, 511, 190, 59);
+			TFDescripcion.setBounds(429, 511, 190, 59);
 			frame.getContentPane().add(TFDescripcion);
 			
 			TFFecha = new JTextField();
@@ -150,7 +151,7 @@ public class FrmOAbierta {
 			TFFecha.setText("2020/01/11");
 			TFFecha.setEditable(false);
 			TFFecha.setColumns(10);
-			TFFecha.setBounds(485, 511, 190, 59);
+			TFFecha.setBounds(629, 511, 133, 59);
 			frame.getContentPane().add(TFFecha);
 			
 			TFCategoria = new JTextField();
@@ -159,7 +160,7 @@ public class FrmOAbierta {
 			TFCategoria.setText("Mu\u00F1eco");
 			TFCategoria.setEditable(false);
 			TFCategoria.setColumns(10);
-			TFCategoria.setBounds(674, 511, 190, 59);
+			TFCategoria.setBounds(772, 511, 146, 59);
 			frame.getContentPane().add(TFCategoria);
 			
 			TFEstado = new JTextField();
@@ -168,8 +169,17 @@ public class FrmOAbierta {
 			TFEstado.setHorizontalAlignment(SwingConstants.CENTER);
 			TFEstado.setEditable(false);
 			TFEstado.setColumns(10);
-			TFEstado.setBounds(858, 511, 190, 59);
+			TFEstado.setBounds(928, 511, 146, 59);
 			frame.getContentPane().add(TFEstado);
+			
+			TFId = new JTextField();
+			TFId.setText("1");
+			TFId.setHorizontalAlignment(SwingConstants.CENTER);
+			TFId.setFont(new Font("Tahoma", Font.PLAIN, 16));
+			TFId.setEditable(false);
+			TFId.setColumns(10);
+			TFId.setBounds(118, 511, 130, 59);
+			frame.getContentPane().add(TFId);
 			
 		//Boton
 			JButton btnEnviar = new JButton("ENVIAR");
@@ -177,8 +187,10 @@ public class FrmOAbierta {
 			btnEnviar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 18));
 			btnEnviar.setBorder(UIManager.getBorder("Button.border"));
 			btnEnviar.setBackground(new Color(52, 77, 160));
-			btnEnviar.setBounds(1070, 502, 126, 74);
+			btnEnviar.setBounds(1120, 502, 126, 74);
 			frame.getContentPane().add(btnEnviar);
+			
+		
 			
 	}
 }

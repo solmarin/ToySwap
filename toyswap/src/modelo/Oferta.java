@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Clase para definir la estructura de las ofertas.
  * @author Sol Marín
- * @version 1
+ * @version 1.5
  */
 public class Oferta {
 	//Declaración de variables y inicialización
@@ -30,6 +30,15 @@ public class Oferta {
 			this.interesados = interesados;
 		}
 		
+		//Constructor para la simulación
+		public Oferta(int idPubli, boolean tipo) {
+			super();
+			this.idPubli = idPubli;
+			this.tipo = tipo;
+			
+		}
+		
+	
 	//Métodos
 		public int getId() {
 			return id;

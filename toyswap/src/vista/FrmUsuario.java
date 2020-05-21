@@ -41,7 +41,7 @@ public class FrmUsuario {
 		private JTextField TFEmail;
 		private JTextField TFTelefono;
 		private JPasswordField pwdContrasea;
-		private Object[] titulos = {"PRODUCTO", "DESCRIPCIÓN", "FECHA","CATEGORIA","ESTADO"};
+		private Object[] titulos = {"ID","PRODUCTO", "DESCRIPCIÓN", "FECHA","CATEGORIA","ESTADO"};
 		private Object[] celdas = {};
 
 	/**
@@ -208,7 +208,7 @@ public class FrmUsuario {
 					};
 					
 				model.setColumnIdentifiers(titulos);
-				model.addRow(new Object[] {"COD","JUEGO DE PS4","2020/02/10","PS4","2 mano"}); //ejemplo de campos
+				model.addRow(new Object[] {"2","COD","JUEGO DE PS4","2020/02/10","PS4","2 mano"}); //ejemplo de campos
 				JTable table = new JTable();
 				table.setShowVerticalLines(false);
 				table.setGridColor(Color.white);
