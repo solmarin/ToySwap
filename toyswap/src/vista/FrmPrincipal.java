@@ -5,6 +5,11 @@ import java.awt.ComponentOrientation;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.sql.SQLException;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -12,12 +17,17 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 
 import controlador.FrmInicio;
+import datos.SQLPublicacion;
+import modelo.Publicacion;
+import modelo.Usuario;
+
 import javax.swing.JTextField;
 
 /**
@@ -28,32 +38,26 @@ import javax.swing.JTextField;
  */
 public class FrmPrincipal {
 	//Declaración y inicialización de variables globales
-		private JFrame frame;
+		public JFrame frame;
 		private JTextField TFBuscador;
 		private Object[] titulos = {"ID","PRODUCTO", "DESCRIPCIÓN", "FECHA","CATEGORIA","ESTADO"};
 		private Object[] celdas = {};
+		private JButton btnPerfil;
+		private JButton btnChats;
+		private JButton btnAyuda;
+		private Usuario usuario;
+		DefaultTableModel model;
+		JComboBox<String> comboBox;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					FrmPrincipal window = new FrmPrincipal();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the application.
+	 * @param usuario 
 	 */
-	public FrmPrincipal() {
+	public FrmPrincipal(Usuario usuario) {
+		this.usuario = usuario;
 		diseño();
+		eventos();
 	}
 
 	/**
@@ -84,7 +88,7 @@ public class FrmPrincipal {
 		
 			
 		//Botones
-			JButton btnPerfil = new JButton("PERFIL");
+			btnPerfil = new JButton("PERFIL");
 			btnPerfil.setBorder(UIManager.getBorder("Button.border"));
 			btnPerfil.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
 			btnPerfil.setBounds(0, 0, 119, 60);
@@ -92,7 +96,7 @@ public class FrmPrincipal {
 			btnPerfil.setForeground(new Color(139, 196, 68));
 			frame.getContentPane().add(btnPerfil);
 			
-			JButton btnChats = new JButton("CHATS");
+			btnChats = new JButton("CHATS");
 			btnChats.setForeground(new Color(139, 196, 68));
 			btnChats.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
 			btnChats.setBorder(UIManager.getBorder("Button.border"));
@@ -100,7 +104,7 @@ public class FrmPrincipal {
 			btnChats.setBounds(543, 0, 109, 60);
 			frame.getContentPane().add(btnChats);
 			
-			JButton btnAyuda = new JButton("");
+			btnAyuda = new JButton("");
 			btnAyuda.setBorder(null);
 			btnAyuda.setContentAreaFilled(false);
 			btnAyuda.setIcon(new ImageIcon(FrmPrincipal.class.getResource("/res/info.png")));
@@ -109,7 +113,7 @@ public class FrmPrincipal {
 			
 			
 		//Lista de filtros
-			JComboBox<String> comboBox = new JComboBox<String>();
+			comboBox = new JComboBox<String>();
 			comboBox.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 14));
 			comboBox.setName("FILTROS");
 			String[] opciones = {"Nombre","Fecha","Estado","Categoria"};
@@ -138,7 +142,6 @@ public class FrmPrincipal {
 		//Tabla con scroll
 			JScrollPane scroll = new JScrollPane();
 			scroll.setFont(new Font("Tahoma", Font.PLAIN, 14));
-			DefaultTableModel model;
 			scroll.setBackground(Color.WHITE);
 			 model = new DefaultTableModel(celdas,0){ 
 				/**
@@ -164,5 +167,70 @@ public class FrmPrincipal {
 			table.setBackground(Color.white);
 			frame.getContentPane().add(scroll);
 			
+	}
+	
+	/**
+	 * Función donde se almacenan todos los eventos de la vista.
+	 */
+	public void eventos() {
+		//Evento: para abrir la pantalla del usuario
+			btnPerfil.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						FrmUsuario frmusuario = new FrmUsuario(usuario);
+						frmusuario.frame.setVisible(true);
+						
+					}
+				});
+			
+		//Evento: boton para abrir los chats --  mostrar ventana de "en proceso"
+			btnChats.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					JOptionPane.showMessageDialog(null, "FUNCIÓN NO DISPONIBLE.\nESTAMOS TRABAJANDO EN ELLO.\nDISCULPEN LAS MOLESTIAS. ");
+					
+				}
+			});
+		
+		//Evento: boton para abrir la pantalla de ayuda
+			btnAyuda.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					FrmAyuda frmayuda = new FrmAyuda();
+					frmayuda.frame.setVisible(true);
+				}
+			});
+			
+		//Evento: escuchar el buscador
+			TFBuscador.addKeyListener(new KeyAdapter() {
+				@Override
+				public void keyReleased(KeyEvent e) {
+					actualizarTabla(TFBuscador,String.valueOf(comboBox.getItemAt(
+							comboBox.getSelectedItem()));
+					
+				}
+			});
+		
+	}
+	
+	/**
+	 * Función para actualizar los campos de la tabla.
+	 */
+	public void actualizarTabla(String x, String filtro) {
+		try {
+		 model.setRowCount(0);
+		 SQLPublicacion sqlpublicacion = new SQLPublicacion();
+		 for(Publicacion c: sqlpublicacion.consultarFiltrando(x,filtro)) {
+		    	if(c != null) {
+		    		int id = c.getId();
+					String nombre = c.getNombre();
+					String descripcion = c.getDescripcion();
+					String estado = c.getEstado();
+					String fecha = c.getFecha();
+					String categoria = c.getCategoria();
+					model.addRow(new Object[] {id, nombre,  descripcion,  estado, fecha, categoria});
+					
+		    	}  	
+		    }
+		 } catch (NumberFormatException e) {
+				System.out.println("resultado: tabla vacia");
+		 }	
 	}
 }

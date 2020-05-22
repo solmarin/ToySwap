@@ -4,22 +4,31 @@ import java.awt.Color;
 import java.awt.ComponentOrientation;
 import java.awt.EventQueue;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-
+import javax.swing.JOptionPane;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
+
+import datos.SQLUsuario;
+import modelo.Usuario;
+import vista.FrmPrincipal;
+import vista.FrmRegistrar;
+
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
 
 /**
  * Clase para crear la pantalla de login. 
  * @author Sol Marín
- * @version 1
+ * @version 2
  *
  */
 public class FrmInicio {
@@ -27,6 +36,8 @@ public class FrmInicio {
 		private JFrame frame;
 		private JTextField TFUsuario;
 		private JPasswordField passwordField;
+		private JButton btnEntrar;
+		private JButton btnRegistrar;
 
 	/**
 	 * Launch the application.
@@ -49,6 +60,7 @@ public class FrmInicio {
 	 */
 	public FrmInicio() {
 		diseño();
+		eventos();
 	}
 
 	/**
@@ -103,7 +115,7 @@ public class FrmInicio {
 			frame.getContentPane().add(passwordField);
 			
 		//Botones
-			JButton btnEntrar = new JButton("ENTRAR");
+			btnEntrar = new JButton("ENTRAR");
 			btnEntrar.setBorder(UIManager.getBorder("Button.border"));
 			btnEntrar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 10));
 			btnEntrar.setBounds(181, 146, 80, 40);
@@ -111,7 +123,7 @@ public class FrmInicio {
 			btnEntrar.setForeground(Color.WHITE);
 			frame.getContentPane().add(btnEntrar);
 			
-			JButton btnRegistrar = new JButton("REGISTRAR");
+			btnRegistrar = new JButton("REGISTRAR");
 			btnRegistrar.setForeground(Color.WHITE);
 			btnRegistrar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 10));
 			btnRegistrar.setBorder(UIManager.getBorder("Button.border"));
@@ -119,5 +131,54 @@ public class FrmInicio {
 			btnRegistrar.setBounds(336, 222, 100, 40);
 			frame.getContentPane().add(btnRegistrar);
 
+	}
+	/**
+	 * Función donde se almacenan todos los eventos de la vista.
+	 */
+	public void eventos() {
+		//Evento: comprobar si existe un usuario para abrir el programa
+		btnEntrar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				comprobar();
+				
+			}
+		});
+		
+		//Evento: para abrir la pantalla de registrar un usuario
+		btnRegistrar.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					
+					FrmRegistrar frmregistrar = new FrmRegistrar();
+					frmregistrar.frame.setVisible(true);
+					
+				}
+			});
+	}
+	
+	/**
+	 * Función para comprobar si existe el usuario introducido y si la contraseña es correcta para abrir el programa principal.
+	 */
+	public void comprobar() {
+		
+		SQLUsuario sqlusuario = new SQLUsuario();
+		ArrayList<Usuario> usu = null;
+		
+		usu = sqlusuario.consulta(TFUsuario.getText());
+			 
+		
+		if(usu.isEmpty()) {
+			JOptionPane.showConfirmDialog(null, "Error: el usuario no existe.", "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+		}else {
+			//comprobamos si la contraseña es la misma para abrir el programa
+			if(usu.get(0).getContrasena().contentEquals(String.valueOf(passwordField.getPassword()))) {
+				FrmPrincipal frmprincipal = new FrmPrincipal(usu.get(0));
+				frmprincipal.frame.setVisible(true);
+			}else {
+				JOptionPane.showConfirmDialog(null, "Error: contraseña incorrecta", "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+				
+			}
+		}
+		
 	}
 }

@@ -21,7 +21,7 @@ import javax.swing.SwingConstants;
  */
 public class FrmAyuda {
 	//Declaración de variables globales
-		private JFrame frame;
+		JFrame frame;
 
 	/**
 	 * Launch the application.

@@ -20,6 +20,9 @@ import javax.swing.border.LineBorder;
 import controlador.FrmInicio;
 import javax.swing.JTextField;
 import java.awt.Panel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.JTextPane;
 /**
  * Clase para definir el diseño al mostrar una publicacion de un producto.
@@ -201,12 +204,7 @@ public class FrmPublicacion {
 			btnOCerrada.setBounds(340, 504, 260, 93);
 			frame.getContentPane().add(btnOCerrada);
 
-		
-		
-		
-	
-		
-		
-		
 	}
+	
+	
 }

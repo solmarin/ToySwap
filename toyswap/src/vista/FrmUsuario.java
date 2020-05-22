@@ -19,6 +19,8 @@ import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 
 import controlador.FrmInicio;
+import modelo.Usuario;
+
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
@@ -31,7 +33,7 @@ import javax.swing.JTable;
  */
 public class FrmUsuario {
 	//Declaración y inicialización de variables globales
-		private JFrame frame;
+		JFrame frame;
 		private JTextField TFDni;
 		private JTextField TFNombre;
 		private JTextField TFApellidos;
@@ -43,27 +45,14 @@ public class FrmUsuario {
 		private JPasswordField pwdContrasea;
 		private Object[] titulos = {"ID","PRODUCTO", "DESCRIPCIÓN", "FECHA","CATEGORIA","ESTADO"};
 		private Object[] celdas = {};
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					FrmUsuario window = new FrmUsuario();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+		private Usuario usuario;
 
 	/**
 	 * Create the application.
+	 * @param usuario 
 	 */
-	public FrmUsuario() {
+	public FrmUsuario(Usuario usuario) {
+		this.usuario = usuario;
 		diseño();
 	}
 
@@ -115,71 +104,60 @@ public class FrmUsuario {
 			frame.getContentPane().add(JLDatos);
 			
 		//Información del usuario
-			TFDni = new JTextField();
-			TFDni.setText("39600888A");
+			TFDni = new JTextField(usuario.getDni());
 			TFDni.setEditable(false);
 			TFDni.setFont(new Font("Tahoma", Font.PLAIN, 14));
 			TFDni.setBounds(211, 124, 150, 24);
 			frame.getContentPane().add(TFDni);
 			TFDni.setColumns(10);
 			
-			TFNombre = new JTextField();
-			TFNombre.setText("Sol");
+			TFNombre = new JTextField(usuario.getNombre());
 			TFNombre.setFont(new Font("Tahoma", Font.PLAIN, 14));
 			TFNombre.setEditable(false);
 			TFNombre.setColumns(10);
 			TFNombre.setBounds(211, 158, 150, 24);
 			frame.getContentPane().add(TFNombre);
 			
-			TFApellidos = new JTextField();
-			TFApellidos.setText("Marin");
+			TFApellidos = new JTextField(usuario.getApellidos());
 			TFApellidos.setFont(new Font("Tahoma", Font.PLAIN, 14));
 			TFApellidos.setEditable(false);
 			TFApellidos.setColumns(10);
 			TFApellidos.setBounds(371, 158, 150, 24);
 			frame.getContentPane().add(TFApellidos);
 			
-			TFDireccion = new JTextField();
-			TFDireccion.setText("C/Bisbe perello, 109. 1-1");
-			TFDireccion.setFont(new Font("Tahoma", Font.PLAIN, 14));
-			TFDireccion.setEditable(false);
-			TFDireccion.setColumns(10);
-			TFDireccion.setBounds(211, 192, 310, 24);
-			frame.getContentPane().add(TFDireccion);
 			
-			TFFechaNacimiento = new JTextField();
-			TFFechaNacimiento.setText("1999/12/23");
+			TFFechaNacimiento = new JTextField(usuario.getFechaNacimiento());
 			TFFechaNacimiento.setFont(new Font("Tahoma", Font.PLAIN, 14));
 			TFFechaNacimiento.setEditable(false);
 			TFFechaNacimiento.setColumns(10);
-			TFFechaNacimiento.setBounds(211, 226, 150, 24);
+			TFFechaNacimiento.setBounds(704, 192, 150, 24);
 			frame.getContentPane().add(TFFechaNacimiento);
 			
-			TFSexo = new JTextField();
-			TFSexo.setText("Mujer");
+			if(usuario.getSexo() == 'M') TFSexo = new JTextField("Mujer");
+			if(usuario.getSexo() == 'H') TFSexo = new JTextField("Hombre");
+			if(usuario.getSexo() == 'O') TFSexo = new JTextField("Otros");
+			if(usuario.getSexo() == 'N') TFSexo = new JTextField("Sexo: -");
 			TFSexo.setFont(new Font("Tahoma", Font.PLAIN, 14));
 			TFSexo.setEditable(false);
 			TFSexo.setColumns(10);
 			TFSexo.setBounds(704, 124, 150, 24);
 			frame.getContentPane().add(TFSexo);
 			
-			TFEmail = new JTextField();
-			TFEmail.setText("email@email.com");
+			TFEmail = new JTextField(usuario.getEmail());
 			TFEmail.setFont(new Font("Tahoma", Font.PLAIN, 14));
 			TFEmail.setEditable(false);
 			TFEmail.setColumns(10);
 			TFEmail.setBounds(704, 162, 310, 24);
 			frame.getContentPane().add(TFEmail);
 			
-			TFTelefono = new JTextField();
-			TFTelefono.setText("678367463");
+			TFTelefono = new JTextField(String.valueOf(usuario.getTelefono()));
 			TFTelefono.setFont(new Font("Tahoma", Font.PLAIN, 14));
 			TFTelefono.setEditable(false);
 			TFTelefono.setColumns(10);
-			TFTelefono.setBounds(704, 196, 310, 24);
+			TFTelefono.setBounds(211, 192, 310, 24);
 			frame.getContentPane().add(TFTelefono);
 			
-			pwdContrasea = new JPasswordField();
+			pwdContrasea = new JPasswordField(usuario.getContrasena());
 			pwdContrasea.setText("contrase\u00F1a");
 			pwdContrasea.setEditable(false);
 			pwdContrasea.setFont(new Font("Tahoma", Font.PLAIN, 14));

@@ -32,7 +32,7 @@ import javax.swing.JComboBox;
  */
 public class FrmRegistrar {
 	//Declaración y inicialización de variables globales
-		private JFrame frame;
+		public JFrame frame;
 		private JTextField TFUsuario;
 		private JTextField TFDni;
 		private JTextField TFNombre;

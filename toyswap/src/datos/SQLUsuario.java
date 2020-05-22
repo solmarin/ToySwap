@@ -110,7 +110,7 @@ public class SQLUsuario {
 				sentencia = c.createStatement();
 			} catch (SQLException e1) {
 				// TODO Auto-generated catch block
-				JOptionPane.showConfirmDialog(null, "ERROR AL RECUPERAR DATOS: "+e1.getMessage(), "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showConfirmDialog(null, "Error: administrar programador. Nota: comprobar usuario.", "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
 			}
 			String consultaSql = "SELECT * FROM usuarios WHERE dni ='"+DNI+"';";
 
@@ -141,11 +141,12 @@ public class SQLUsuario {
 			 
 
 			} catch (Exception e) {
-				JOptionPane.showConfirmDialog(null, "ERROR AL RECUPERAR DATOS: "+e.getMessage(), "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showConfirmDialog(null, "Error: administrar programador. Nota: comprobar usuario.", "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
 				
 			}
 			return aUsu;
 
 		}
+	
 
 }
