@@ -14,7 +14,7 @@ import modelo.Publicacion;
 /**
  * Clase de consultas SQL para la relación tabla Publicaciones - clase Publicacion.
  * @author Sol Marín
- * @version 1
+ * @version 2
  *
  */
 public class SQLPublicacion {
@@ -102,9 +102,7 @@ public class SQLPublicacion {
 			} catch (SQLException e1) {
 				// TODO Auto-generated catch block
 				JOptionPane.showConfirmDialog(null, "CONTACTE TECNICO BBDD:"+e1.getMessage(), "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
-			}
-			//consulta sql
-			
+			}		
 			
 			//tratado de casos posibles de consulta
 			
@@ -112,7 +110,9 @@ public class SQLPublicacion {
 			else if (x != "" && filtro.equalsIgnoreCase("fecha")) consultaSql = "SELECT * FROM publicaciones WHERE fecha LIKE '%"+x+"%';";
 			else if (x != "" && filtro.equalsIgnoreCase("categoria")) consultaSql = "SELECT * FROM publicaciones WHERE categoria LIKE '%"+x+"%';";
 			else if (x != "" && filtro.equalsIgnoreCase("estado")) consultaSql = "SELECT * FROM publicaciones WHERE estado LIKE '%"+x+"%';";
-			else consultaSql = "SELECT * FROM publicaciones;s";
+			else if (x != "" && filtro.equalsIgnoreCase("dni")) consultaSql = "SELECT * FROM publicaciones WHERE dni LIKE '"+x+"';";
+			else if (x != "" && filtro.equalsIgnoreCase("publi")) consultaSql = "SELECT * FROM publicaciones WHERE id LIKE '"+Integer.parseInt(x)+"';";
+			else consultaSql = "SELECT * FROM publicaciones;";
 			
 			
 			

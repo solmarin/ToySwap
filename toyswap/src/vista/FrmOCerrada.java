@@ -3,15 +3,17 @@ package vista;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.ComponentOrientation;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -22,15 +24,19 @@ import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 
 import controlador.FrmInicio;
+import datos.SQLOferta;
+import datos.SQLPublicacion;
+import modelo.Oferta;
+import modelo.Publicacion;
 /**
  * Clase para definir el diseño de la oferta cerrada.
  * @author Sol Marín
- * @version 1
+ * @version 2
  *
  */
 public class FrmOCerrada {
 	//Declaración y inicialización de variables globales
-		private JFrame frame;
+		JFrame frame;
 		private JTextField TFNombre;
 		private JTextField TFDescripcion;
 		private JTextField TFFecha;
@@ -39,29 +45,19 @@ public class FrmOCerrada {
 		private Object[] titulos = {"ID", "PRODUCTO", "DESCRIPCIÓN", "FECHA","CATEGORIA","ESTADO"};
 		private Object[] celdas = {};
 		private JTextField TFId;
-
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					FrmOCerrada window = new FrmOCerrada();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
+		private Publicacion publi;
+		private String dni;
+		private DefaultTableModel model;
+		private JButton btnEnviar;
+		
 	/**
 	 * Create the application.
 	 */
-	public FrmOCerrada() {
+	public FrmOCerrada(Publicacion publi, String dni) {
+		this.publi = publi;
+		this.dni = dni;
 		diseño();
+		eventos();
 	}
 
 	/**
@@ -120,44 +116,39 @@ public class FrmOCerrada {
 			
 			
 		//TextField para mostrar los datos del producto
-			TFNombre = new JTextField();
+			TFNombre = new JTextField(publi.getNombre());
 			TFNombre.setHorizontalAlignment(SwingConstants.CENTER);
 			TFNombre.setFont(new Font("Tahoma", Font.PLAIN, 16));
-			TFNombre.setText("Coche");
 			TFNombre.setEditable(false);
 			TFNombre.setBounds(276, 511, 177, 59);
 			frame.getContentPane().add(TFNombre);
 			TFNombre.setColumns(10);
 			
-			TFDescripcion = new JTextField();
+			TFDescripcion = new JTextField(publi.getDescripcion());
 			TFDescripcion.setFont(new Font("Tahoma", Font.PLAIN, 16));
-			TFDescripcion.setText("Coche rayo rojo con...");
 			TFDescripcion.setHorizontalAlignment(SwingConstants.CENTER);
 			TFDescripcion.setEditable(false);
 			TFDescripcion.setColumns(10);
 			TFDescripcion.setBounds(463, 511, 190, 59);
 			frame.getContentPane().add(TFDescripcion);
 			
-			TFFecha = new JTextField();
+			TFFecha = new JTextField(publi.getFecha());
 			TFFecha.setFont(new Font("Tahoma", Font.PLAIN, 16));
 			TFFecha.setHorizontalAlignment(SwingConstants.CENTER);
-			TFFecha.setText("2020/01/11");
 			TFFecha.setEditable(false);
 			TFFecha.setColumns(10);
 			TFFecha.setBounds(663, 511, 139, 59);
 			frame.getContentPane().add(TFFecha);
 			
-			TFCategoria = new JTextField();
+			TFCategoria = new JTextField(publi.getCategoria());
 			TFCategoria.setHorizontalAlignment(SwingConstants.CENTER);
 			TFCategoria.setFont(new Font("Tahoma", Font.PLAIN, 16));
-			TFCategoria.setText("Mu\u00F1eco");
 			TFCategoria.setEditable(false);
 			TFCategoria.setColumns(10);
 			TFCategoria.setBounds(812, 511, 126, 59);
 			frame.getContentPane().add(TFCategoria);
 			
-			TFEstado = new JTextField();
-			TFEstado.setText("Nuevo");
+			TFEstado = new JTextField(publi.getEstado());
 			TFEstado.setFont(new Font("Tahoma", Font.PLAIN, 16));
 			TFEstado.setHorizontalAlignment(SwingConstants.CENTER);
 			TFEstado.setEditable(false);
@@ -165,8 +156,7 @@ public class FrmOCerrada {
 			TFEstado.setBounds(948, 511, 146, 59);
 			frame.getContentPane().add(TFEstado);
 			
-			TFId = new JTextField();
-			TFId.setText("1");
+			TFId = new JTextField(String.valueOf(publi.getId()));
 			TFId.setHorizontalAlignment(SwingConstants.CENTER);
 			TFId.setFont(new Font("Tahoma", Font.PLAIN, 16));
 			TFId.setEditable(false);
@@ -175,7 +165,7 @@ public class FrmOCerrada {
 			frame.getContentPane().add(TFId);
 			
 		//Boton
-			JButton btnEnviar = new JButton("ENVIAR");
+			btnEnviar = new JButton("ENVIAR");
 			btnEnviar.setForeground(Color.WHITE);
 			btnEnviar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 18));
 			btnEnviar.setBorder(UIManager.getBorder("Button.border"));
@@ -185,7 +175,6 @@ public class FrmOCerrada {
 			
 		//Tabla con scroll
 			JScrollPane scroll = new JScrollPane();
-			DefaultTableModel model;
 			scroll.setBackground(Color.WHITE);
 			 model = new DefaultTableModel(celdas,0){ 
 				/**
@@ -212,9 +201,49 @@ public class FrmOCerrada {
 			table.setBackground(Color.white);
 			frame.getContentPane().add(scroll);
 			
-			
-			
+		//llamamos a la función para rellenar la tabla
+			actualizarTabla(dni,"dni");
 		
+	}
+	
+	/**
+	 * Función que almacena los eventos de la vista.
+	 */
+	public void eventos() {
+		//Evento: crear una simulación de oferta
+			btnEnviar.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					SQLOferta sqloferta = new SQLOferta();
+					sqloferta.crear(new Oferta(publi.getId(),false));
+					
+				}
+			});
+	}
+	
+	/**
+	 * Función para actualizar la tabla según el dni.
+	 * @param x
+	 * @param filtro
+	 */
+	public void actualizarTabla(String x, String filtro) {
+		try {
+		 model.setRowCount(0);
+		 SQLPublicacion sqlpublicacion = new SQLPublicacion();
+		 for(Publicacion c: sqlpublicacion.consultarFiltrando(x,filtro)) {
+		    	if(c != null) {
+		    		int id = c.getId();
+					String nombre = c.getNombre();
+					String descripcion = c.getDescripcion();
+					String estado = c.getEstado();
+					String fecha = c.getFecha();
+					String categoria = c.getCategoria();
+					model.addRow(new Object[] {id, nombre,  descripcion,  estado, fecha, categoria});
+		    	}
+		    }
+		 } catch (NumberFormatException e) {
+				JOptionPane.showConfirmDialog(null, "CONTACTE TECNICO BBDD:"+e.getMessage(), "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+
+		 }	
 	}
 
 }

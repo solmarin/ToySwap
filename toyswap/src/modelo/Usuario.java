@@ -16,7 +16,6 @@ public class Usuario {
 		private char sexo;
 		private String email;
 		private int telefono;
-		private String direccion;
 		private boolean salir;
 		
 	//Constructor/es

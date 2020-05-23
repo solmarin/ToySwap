@@ -10,7 +10,7 @@ import modelo.Oferta;
 /**
  * Clase de consultas SQL entre la relación tabla Ofertas - clase Oferta.
  * @author Sol Marín
- * @version 1
+ * @version 2
  *
  */
 public class SQLOferta {
@@ -51,7 +51,10 @@ public class SQLOferta {
 					sentencia.executeUpdate(sqlInsert);
 					sentencia.close();
 					c.close();
-					System.out.println("OFERTA REALIZADA.\n DATOS:\nPublicación:"+oferta.getIdPubli()+"\nTipo:"+oferta.isTipo());
+					//printar mensaje según tipo de oferta
+					if(oferta.isTipo()) JOptionPane.showConfirmDialog(null, "OFERTA REALIZADA.\nDATOS\nID Publicación:"+oferta.getIdPubli()+"\nTipo de oferta: Abierta", "OFERTA REALIZADA", JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE);
+					else JOptionPane.showConfirmDialog(null, "OFERTA REALIZADA.\n DATOS:\nPublicación:"+oferta.getIdPubli()+"\nTipo: Cerrada", "OFERTA REALIZADA", JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE);
+
 
 				} catch (Exception e) {
 					JOptionPane.showConfirmDialog(null, "CONTACTE TECNICO BBDD:"+e.getMessage(), "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);

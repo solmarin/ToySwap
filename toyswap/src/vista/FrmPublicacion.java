@@ -3,7 +3,6 @@ package vista;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.ComponentOrientation;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Image;
 
@@ -18,6 +17,8 @@ import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 
 import controlador.FrmInicio;
+import modelo.Publicacion;
+
 import javax.swing.JTextField;
 import java.awt.Panel;
 import java.awt.event.ActionEvent;
@@ -27,38 +28,30 @@ import javax.swing.JTextPane;
 /**
  * Clase para definir el diseño al mostrar una publicacion de un producto.
  * @author Sol Marín
- * @version 1
+ * @version 2
  *
  */
 public class FrmPublicacion {
 	//Declaración y inicialización de variables globales
-		private JFrame frame;
+		JFrame frame;
 		private JTextField TFId;
 		private JTextField TFNombre;
 		private JTextField TFCategoria;
 		private JTextField TFEstado;
+		private Publicacion publi;
+		private JButton btnOAbierta;
+		private JButton btnOCerrada;
+		private String dni;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					FrmPublicacion window = new FrmPublicacion();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the application.
 	 */
-	public FrmPublicacion() {
+	public FrmPublicacion(Publicacion publi, String dni) {
+		this.publi = publi;
+		this.dni = dni;
 		diseño();
+		eventos();
 	}
 
 	/**
@@ -101,8 +94,9 @@ public class FrmPublicacion {
 			JLPublicacion.setBorder(border);
 			frame.getContentPane().add(JLPublicacion);
 			
+			
 		//Label para mostrar la fecha de publicación
-			JLabel JLFecha = new JLabel("EJEMPLO FECHA");
+			JLabel JLFecha = new JLabel(publi.getFecha());
 			JLFecha.setOpaque(true);
 			JLFecha.setHorizontalAlignment(SwingConstants.CENTER);
 			JLFecha.setForeground(new Color(52, 77, 160));
@@ -122,33 +116,31 @@ public class FrmPublicacion {
 			frame.getContentPane().add(JLDatos);
 			
 		//textField de los datos del producto
-			TFId = new JTextField();
+			TFId = new JTextField(String.valueOf(publi.getId()));
+			TFId.setOpaque(false);
 			TFId.setHorizontalAlignment(SwingConstants.CENTER);
 			TFId.setFont(new Font("Tahoma", Font.BOLD, 14));
 			TFId.setEnabled(true);
 			TFId.setEditable(false);
-			TFId.setOpaque(false);
-			TFId.setBorder(null);
-			TFId.setText("ID 1");
-			TFId.setBounds(195, 161, 200, 24);
-			frame.getContentPane().add(TFId);
 			TFId.setColumns(10);
+			TFId.setBorder(null);
+			TFId.setBounds(214, 161, 200, 24);
+			frame.getContentPane().add(TFId);
+		
 			
-			TFNombre = new JTextField();
+			TFNombre = new JTextField(publi.getNombre());
 			TFNombre.setHorizontalAlignment(SwingConstants.CENTER);
-			TFNombre.setText("ELEFANTE");
 			TFNombre.setOpaque(false);
 			TFNombre.setFont(new Font("Tahoma", Font.BOLD, 14));
 			TFNombre.setEnabled(true);
 			TFNombre.setEditable(false);
 			TFNombre.setColumns(10);
 			TFNombre.setBorder(null);
-			TFNombre.setBounds(449, 161, 200, 24);
+			TFNombre.setBounds(450, 161, 200, 24);
 			frame.getContentPane().add(TFNombre);
 			
-			TFCategoria = new JTextField();
+			TFCategoria = new JTextField(publi.getCategoria());
 			TFCategoria.setHorizontalAlignment(SwingConstants.CENTER);
-			TFCategoria.setText("Peluche");
 			TFCategoria.setOpaque(false);
 			TFCategoria.setFont(new Font("Tahoma", Font.BOLD, 14));
 			TFCategoria.setEnabled(true);
@@ -158,9 +150,8 @@ public class FrmPublicacion {
 			TFCategoria.setBounds(699, 161, 200, 24);
 			frame.getContentPane().add(TFCategoria);
 			
-			TFEstado = new JTextField();
+			TFEstado = new JTextField(publi.getEstado());
 			TFEstado.setHorizontalAlignment(SwingConstants.CENTER);
-			TFEstado.setText("2 mano");
 			TFEstado.setOpaque(false);
 			TFEstado.setFont(new Font("Tahoma", Font.BOLD, 14));
 			TFEstado.setEnabled(true);
@@ -180,7 +171,7 @@ public class FrmPublicacion {
 		//Area de descripción
 			JTextPane TFADescripcion = new JTextPane();
 			TFADescripcion.setFont(new Font("Tahoma", Font.PLAIN, 14));
-			TFADescripcion.setText("Ejemplo de descripci\u00F3n de un producto.\nElenfante de peluche de 24 cm.");
+			TFADescripcion.setText(publi.getDescripcion());
 			TFADescripcion.setEditable(false);
 			TFADescripcion.setOpaque(false);
 			TFADescripcion.setBounds(214, 218, 878, 216);
@@ -188,7 +179,7 @@ public class FrmPublicacion {
 			frame.getContentPane().add(TFADescripcion);
 		
 		//Botones
-			JButton btnOAbierta = new JButton("OFERTA ABIERTA");
+			btnOAbierta = new JButton("OFERTA ABIERTA");
 			btnOAbierta.setBorder(UIManager.getBorder("Button.border"));
 			btnOAbierta.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
 			btnOAbierta.setBounds(722, 504, 260, 93);
@@ -196,15 +187,39 @@ public class FrmPublicacion {
 			btnOAbierta.setForeground(Color.WHITE);
 			frame.getContentPane().add(btnOAbierta);	
 			
-			JButton btnOCerrada = new JButton("OFERTA CERRADA");
+			btnOCerrada = new JButton("OFERTA CERRADA");
 			btnOCerrada.setForeground(Color.WHITE);
 			btnOCerrada.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 16));
 			btnOCerrada.setBorder(UIManager.getBorder("Button.border"));
 			btnOCerrada.setBackground(new Color(52, 77, 160));
 			btnOCerrada.setBounds(340, 504, 260, 93);
-			frame.getContentPane().add(btnOCerrada);
-
+			frame.getContentPane().add(btnOCerrada);	
+			
 	}
 	
+	/**
+	 * Función para almacenar los eventos de la vista.
+	 */
 	
+	public void eventos() {
+		
+		//Evento: para abrir la pantalla de la oferta abuerta
+			btnOAbierta.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					FrmOAbierta frmoa = new FrmOAbierta(publi);
+					frmoa.frame.setVisible(true);
+					
+				}
+			});
+		
+		//Evento: para abrir la pantalla de la oferta cerrada
+			btnOCerrada.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					FrmOCerrada frmoc = new FrmOCerrada(publi,dni);
+					frmoc.frame.setVisible(true);
+					
+				}
+				});
+		
+	}
 }

@@ -75,6 +75,9 @@ public class Publicacion {
 		public String getFecha() {
 			return fecha;
 		}
+		public void setFecha(String fecha) {
+			this.fecha = fecha;
+		}
 		public void setFecha() {
 			Calendar cal;
 			String sFecha;

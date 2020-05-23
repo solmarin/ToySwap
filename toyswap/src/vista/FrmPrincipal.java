@@ -2,14 +2,15 @@ package vista;
 
 import java.awt.Color;
 import java.awt.ComponentOrientation;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.sql.SQLException;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -33,7 +34,7 @@ import javax.swing.JTextField;
 /**
  * Clase para definir el diseño de la pantalla principal.
  * @author Sol Marín
- * @version 1
+ * @version 2
  *
  */
 public class FrmPrincipal {
@@ -47,6 +48,7 @@ public class FrmPrincipal {
 		private JButton btnAyuda;
 		private Usuario usuario;
 		DefaultTableModel model;
+		JTable table;
 		JComboBox<String> comboBox;
 
 
@@ -153,8 +155,7 @@ public class FrmPrincipal {
 				};
 				
 			model.setColumnIdentifiers(titulos);
-			model.addRow(new Object[] {"2","COD","JUEGO DE PS4","2020/02/10","PS4","2 mano"}); //ejemplo de campos
-			JTable table = new JTable();
+			table = new JTable();
 			table.setShowVerticalLines(false);
 			table.setGridColor(Color.white);
 			table.setForeground(new Color(0, 0, 0));
@@ -166,6 +167,9 @@ public class FrmPrincipal {
 			scroll.setBounds(130, 150, 992, 382);;
 			table.setBackground(Color.white);
 			frame.getContentPane().add(scroll);
+			
+			//Rellenamos la tabla inicialmente
+			actualizarTabla(TFBuscador.getText(),String.valueOf(comboBox.getSelectedItem()));
 			
 	}
 	
@@ -202,12 +206,19 @@ public class FrmPrincipal {
 			TFBuscador.addKeyListener(new KeyAdapter() {
 				@Override
 				public void keyReleased(KeyEvent e) {
-					actualizarTabla(TFBuscador,String.valueOf(comboBox.getItemAt(
-							comboBox.getSelectedItem()));
+					actualizarTabla(TFBuscador.getText(),String.valueOf(comboBox.getSelectedItem()));
 					
 				}
 			});
 		
+		//Evento: escuchar a la tabla -- pasar los parametros a la nueva vista
+		    table.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					//Le pasamos a la vista el valor de la posición 0 de la tabla en el punto seleccionado
+						abrirPubliConDatos(String.valueOf(table.getValueAt(table.rowAtPoint(e.getPoint()), 0)));
+				}
+			});	    
 	}
 	
 	/**
@@ -230,7 +241,29 @@ public class FrmPrincipal {
 		    	}  	
 		    }
 		 } catch (NumberFormatException e) {
-				System.out.println("resultado: tabla vacia");
+				JOptionPane.showConfirmDialog(null, "CONTACTE TECNICO BBDD:"+e.getMessage(), "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+
 		 }	
 	}
+	
+	/**
+	 * Función para abrir la ventana de publicación pasandole sus datos.
+	 */
+		public void abrirPubliConDatos(String id) {
+			
+			SQLPublicacion sqlpublicacion = new SQLPublicacion();
+			ArrayList<Publicacion> publi = null;
+			
+			publi = sqlpublicacion.consultarFiltrando(id, "publi");
+				 
+			
+			if(publi.isEmpty()) {
+				JOptionPane.showConfirmDialog(null, "CONTACTE TECNICO BBDD: mostrar datos seleccionados", "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+			}else {
+				FrmPublicacion frmpublicacion = new FrmPublicacion(publi.get(0),usuario.getDni());
+				frmpublicacion.frame.setVisible(true);
+				
+			}
+			
+		}
 }

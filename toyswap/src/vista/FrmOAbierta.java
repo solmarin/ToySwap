@@ -3,9 +3,10 @@ package vista;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.ComponentOrientation;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -18,45 +19,39 @@ import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 
 import controlador.FrmInicio;
+import datos.SQLOferta;
+import modelo.Oferta;
+import modelo.Publicacion;
+
 import javax.swing.JTextPane;
 import javax.swing.JTextField;
 /**
  * Clase para definir el diseño de la pantalla de ofertas abiertas.
  * @author Sol Marín
- * @version 1.5
+ * @version 2
  *
  */
 public class FrmOAbierta {
 	//Declaración y inicialización de variables globales
-		private JFrame frame;
+		JFrame frame;
 		private JTextField TFNombre;
 		private JTextField TFDescripcion;
 		private JTextField TFFecha;
 		private JTextField TFCategoria;
 		private JTextField TFEstado;
 		private JTextField TFId;
+		private Publicacion publi;
+		private JButton btnEnviar;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					FrmOAbierta window = new FrmOAbierta();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the application.
+	 * @param publi 
 	 */
-	public FrmOAbierta() {
+	public FrmOAbierta(Publicacion publi) {
+		this.publi = publi;
 		diseño();
+		eventos();
 	}
 
 	/**
@@ -110,14 +105,15 @@ public class FrmOAbierta {
 			JLOAbierta.setBorder(border);
 			frame.getContentPane().add(JLOAbierta);
 			
-			JTextPane TFAInformación = new JTextPane();
-			TFAInformación.setOpaque(false);
-			TFAInformación.setFont(new Font("Tahoma", Font.PLAIN, 14));
-			TFAInformación.setFocusable(false);
-			TFAInformación.setEditable(false);
-			TFAInformación.setText("COMO FUNCIONA?");
-			TFAInformación.setBounds(178, 119, 870, 318);
-			frame.getContentPane().add(TFAInformación);
+			JTextPane TFAInformacion = new JTextPane();
+			TFAInformacion.setText("COMO FUNCIONA?\n	Una oferta abierta consiste en darle la posibilidad al otro usuario de eligir una de tus publicaciones a cambio de su publicación.\n	Esta tria por parte del otro usuario se realizará en el Chat.\n		Suerte con la oferta!\"");
+			TFAInformacion.setOpaque(false);
+			TFAInformacion.setFont(new Font("Tahoma", Font.PLAIN, 14));
+			TFAInformacion.setFocusable(false);
+			TFAInformacion.setEditable(false);
+			TFAInformacion.setText("COMO FUNCIONA?");
+			TFAInformacion.setBounds(178, 119, 870, 318);
+			frame.getContentPane().add(TFAInformacion);
 			
 		//Label informativo 
 			JLabel lblProductoOferta = new JLabel("PRODUCTO OFERTA");
@@ -127,44 +123,39 @@ public class FrmOAbierta {
 			frame.getContentPane().add(lblProductoOferta);
 			
 		//TextField para mostrar los datos del producto
-			TFNombre = new JTextField();
+			TFNombre = new JTextField(publi.getNombre());
 			TFNombre.setHorizontalAlignment(SwingConstants.CENTER);
 			TFNombre.setFont(new Font("Tahoma", Font.PLAIN, 16));
-			TFNombre.setText("Coche");
 			TFNombre.setEditable(false);
 			TFNombre.setBounds(258, 511, 161, 59);
 			frame.getContentPane().add(TFNombre);
 			TFNombre.setColumns(10);
 			
-			TFDescripcion = new JTextField();
+			TFDescripcion = new JTextField(publi.getDescripcion());
 			TFDescripcion.setFont(new Font("Tahoma", Font.PLAIN, 16));
-			TFDescripcion.setText("Coche rayo rojo con...");
 			TFDescripcion.setHorizontalAlignment(SwingConstants.CENTER);
 			TFDescripcion.setEditable(false);
 			TFDescripcion.setColumns(10);
 			TFDescripcion.setBounds(429, 511, 190, 59);
 			frame.getContentPane().add(TFDescripcion);
 			
-			TFFecha = new JTextField();
+			TFFecha = new JTextField(publi.getFecha());
 			TFFecha.setFont(new Font("Tahoma", Font.PLAIN, 16));
 			TFFecha.setHorizontalAlignment(SwingConstants.CENTER);
-			TFFecha.setText("2020/01/11");
 			TFFecha.setEditable(false);
 			TFFecha.setColumns(10);
 			TFFecha.setBounds(629, 511, 133, 59);
 			frame.getContentPane().add(TFFecha);
 			
-			TFCategoria = new JTextField();
+			TFCategoria = new JTextField(publi.getCategoria());
 			TFCategoria.setHorizontalAlignment(SwingConstants.CENTER);
 			TFCategoria.setFont(new Font("Tahoma", Font.PLAIN, 16));
-			TFCategoria.setText("Mu\u00F1eco");
 			TFCategoria.setEditable(false);
 			TFCategoria.setColumns(10);
 			TFCategoria.setBounds(772, 511, 146, 59);
 			frame.getContentPane().add(TFCategoria);
 			
-			TFEstado = new JTextField();
-			TFEstado.setText("Nuevo");
+			TFEstado = new JTextField(publi.getEstado());
 			TFEstado.setFont(new Font("Tahoma", Font.PLAIN, 16));
 			TFEstado.setHorizontalAlignment(SwingConstants.CENTER);
 			TFEstado.setEditable(false);
@@ -172,8 +163,7 @@ public class FrmOAbierta {
 			TFEstado.setBounds(928, 511, 146, 59);
 			frame.getContentPane().add(TFEstado);
 			
-			TFId = new JTextField();
-			TFId.setText("1");
+			TFId = new JTextField(String.valueOf(publi.getId()));
 			TFId.setHorizontalAlignment(SwingConstants.CENTER);
 			TFId.setFont(new Font("Tahoma", Font.PLAIN, 16));
 			TFId.setEditable(false);
@@ -182,15 +172,26 @@ public class FrmOAbierta {
 			frame.getContentPane().add(TFId);
 			
 		//Boton
-			JButton btnEnviar = new JButton("ENVIAR");
+			btnEnviar = new JButton("ENVIAR");
 			btnEnviar.setForeground(Color.WHITE);
 			btnEnviar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 18));
 			btnEnviar.setBorder(UIManager.getBorder("Button.border"));
 			btnEnviar.setBackground(new Color(52, 77, 160));
 			btnEnviar.setBounds(1120, 502, 126, 74);
-			frame.getContentPane().add(btnEnviar);
-			
-		
-			
+			frame.getContentPane().add(btnEnviar);		
 	}
+	/**
+	 * Función que almacena los eventos de la vista.
+	 */
+	public void eventos() {
+		//Evento: crear una simulación de oferta
+			btnEnviar.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					SQLOferta sqloferta = new SQLOferta();
+					sqloferta.crear(new Oferta(publi.getId(),true));
+					
+				}
+			});
+	}
+	
 }

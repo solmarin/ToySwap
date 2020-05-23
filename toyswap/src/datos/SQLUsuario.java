@@ -14,7 +14,7 @@ import modelo.Usuario;
 /**
  * Clase de sentencias SQL para la relacion tabla Usuarios - clase Usuario.
  * @author Sol Marín
- * @version 1
+ * @version 2
  *
  */
 public class SQLUsuario {

@@ -3,7 +3,6 @@ package vista;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.ComponentOrientation;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Image;
 
@@ -12,6 +11,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
@@ -19,6 +19,8 @@ import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 
 import controlador.FrmInicio;
+import datos.SQLPublicacion;
+import modelo.Publicacion;
 import modelo.Usuario;
 
 import javax.swing.JTextField;
@@ -28,7 +30,7 @@ import javax.swing.JTable;
 /**
  * Clase para definir la estructura de la vista del perfil del usuario.
  * @author Sol Marín
- * @version 1
+ * @version 2
  *
  */
 public class FrmUsuario {
@@ -37,7 +39,6 @@ public class FrmUsuario {
 		private JTextField TFDni;
 		private JTextField TFNombre;
 		private JTextField TFApellidos;
-		private JTextField TFDireccion;
 		private JTextField TFFechaNacimiento;
 		private JTextField TFSexo;
 		private JTextField TFEmail;
@@ -46,6 +47,7 @@ public class FrmUsuario {
 		private Object[] titulos = {"ID","PRODUCTO", "DESCRIPCIÓN", "FECHA","CATEGORIA","ESTADO"};
 		private Object[] celdas = {};
 		private Usuario usuario;
+		private DefaultTableModel model;
 
 	/**
 	 * Create the application.
@@ -174,7 +176,6 @@ public class FrmUsuario {
 			
 			//Tabla con scroll
 				JScrollPane scroll = new JScrollPane();
-				DefaultTableModel model;
 				scroll.setBackground(Color.WHITE);
 				 model = new DefaultTableModel(celdas,0){ 
 					/**
@@ -234,5 +235,37 @@ public class FrmUsuario {
 				btnSolEliminar.setBackground(new Color(52, 77, 160));
 				btnSolEliminar.setBounds(283, 0, 181, 60);
 				frame.getContentPane().add(btnSolEliminar);
+				
+			//Actualizar tabla del usuario
+				actualizarTabla(usuario.getDni(),"dni");
+	}
+	
+	public void Eventos() {
+		
+	}
+	/**
+	 * Función para actualizar la tabla.
+	 * @param x = dni
+	 * @param filtro = dni
+	 */
+	public void actualizarTabla(String x, String filtro) {
+		try {
+		 model.setRowCount(0);
+		 SQLPublicacion sqlpublicacion = new SQLPublicacion();
+		 for(Publicacion c: sqlpublicacion.consultarFiltrando(x,filtro)) {
+		    	if(c != null) {
+		    		int id = c.getId();
+					String nombre = c.getNombre();
+					String descripcion = c.getDescripcion();
+					String estado = c.getEstado();
+					String fecha = c.getFecha();
+					String categoria = c.getCategoria();
+					model.addRow(new Object[] {id, nombre,  descripcion,  estado, fecha, categoria});
+		    	}
+		    }
+		 } catch (NumberFormatException e) {
+				JOptionPane.showConfirmDialog(null, "CONTACTE TECNICO BBDD:"+e.getMessage(), "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+
+		 }	
 	}
 }
