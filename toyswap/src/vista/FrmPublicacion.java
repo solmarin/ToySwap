@@ -54,6 +54,7 @@ public class FrmPublicacion {
 		eventos();
 	}
 
+
 	/**
 	 * Initialize the contents of the frame.
 	 */

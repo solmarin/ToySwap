@@ -41,7 +41,7 @@ public class FrmPrincipal {
 	//Declaración y inicialización de variables globales
 		public JFrame frame;
 		private JTextField TFBuscador;
-		private Object[] titulos = {"ID","PRODUCTO", "DESCRIPCIÓN", "FECHA","CATEGORIA","ESTADO"};
+		private Object[] titulos = {"ID","PRODUCTO", "DESCRIPCIÓN", "ESTADO","FECHA","CATEGORIA"};
 		private Object[] celdas = {};
 		private JButton btnPerfil;
 		private JButton btnChats;
@@ -166,6 +166,7 @@ public class FrmPrincipal {
 			scroll.setViewportView(table);
 			scroll.setBounds(130, 150, 992, 382);;
 			table.setBackground(Color.white);
+			table.getTableHeader().setReorderingAllowed(false);
 			frame.getContentPane().add(scroll);
 			
 			//Rellenamos la tabla inicialmente

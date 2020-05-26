@@ -71,7 +71,7 @@ public class SQLPublicacion {
 		 */
 		public void eliminar(int id) {
 			
-			String sqlDelet = "DELETE FROM Publicaciones WHERE ID = '"+id+"'";
+			String sqlDelet = "DELETE FROM Publicaciones WHERE id = '"+id+"'";
 
 			try {
 

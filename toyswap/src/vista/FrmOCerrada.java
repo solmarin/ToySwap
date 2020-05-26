@@ -194,7 +194,7 @@ public class FrmOCerrada {
 			table.setEnabled(true);
 			table.setModel(model);
 		    table.setFont(new Font("FreeSans", Font.ITALIC, 16));
-		    
+		    table.getTableHeader().setReorderingAllowed(false);
 			table.setRowHeight(18);
 			scroll.setViewportView(table);
 			scroll.setBounds(128, 141, 700, 283);;

@@ -5,10 +5,20 @@ import java.awt.Component;
 import java.awt.ComponentOrientation;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.FileWriter;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -18,8 +28,11 @@ import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
 
+import com.toedter.calendar.JDateChooser;
+
 import controlador.FrmInicio;
 import datos.SQLPublicacion;
+import datos.SQLUsuario;
 import modelo.Publicacion;
 import modelo.Usuario;
 
@@ -30,7 +43,7 @@ import javax.swing.JTable;
 /**
  * Clase para definir la estructura de la vista del perfil del usuario.
  * @author Sol Marín
- * @version 2
+ * @version 3
  *
  */
 public class FrmUsuario {
@@ -44,10 +57,26 @@ public class FrmUsuario {
 		private JTextField TFEmail;
 		private JTextField TFTelefono;
 		private JPasswordField pwdContrasea;
-		private Object[] titulos = {"ID","PRODUCTO", "DESCRIPCIÓN", "FECHA","CATEGORIA","ESTADO"};
+		private Object[] titulos = {"ID","PRODUCTO", "DESCRIPCIÓN", "ESTADO","FECHA","CATEGORIA"};
 		private Object[] celdas = {};
 		private Usuario usuario;
 		private DefaultTableModel model;
+		private JTable table;
+		private JButton btnNuevaPubli;
+		private JButton btnEliminarPubli;
+		private JButton btnEditar;
+		private JButton btnSolEliminar;
+		private JButton btnGuardar;
+		private JComboBox<String> comboBox;
+		private JDateChooser calendarFechaNacimiento;
+		private boolean editar = false;
+		private boolean nueva = false;
+		private boolean eliminar = false;
+		private JTextField TFNombreP;
+		private JTextField TFDescP;
+		private JTextField TFFechaP;
+		private JTextField TFCategoriaP;
+		private JTextField TFEstadoP;
 
 	/**
 	 * Create the application.
@@ -56,6 +85,7 @@ public class FrmUsuario {
 	public FrmUsuario(Usuario usuario) {
 		this.usuario = usuario;
 		diseño();
+		eventos();
 	}
 
 	/**
@@ -132,13 +162,14 @@ public class FrmUsuario {
 			TFFechaNacimiento.setFont(new Font("Tahoma", Font.PLAIN, 14));
 			TFFechaNacimiento.setEditable(false);
 			TFFechaNacimiento.setColumns(10);
-			TFFechaNacimiento.setBounds(704, 192, 150, 24);
+			TFFechaNacimiento.setBounds(704, 158, 150, 24);
 			frame.getContentPane().add(TFFechaNacimiento);
 			
 			if(usuario.getSexo() == 'M') TFSexo = new JTextField("Mujer");
 			if(usuario.getSexo() == 'H') TFSexo = new JTextField("Hombre");
 			if(usuario.getSexo() == 'O') TFSexo = new JTextField("Otros");
-			if(usuario.getSexo() == 'N') TFSexo = new JTextField("Sexo: -");
+			if(usuario.getSexo() == '-') TFSexo = new JTextField("-");
+			
 			TFSexo.setFont(new Font("Tahoma", Font.PLAIN, 14));
 			TFSexo.setEditable(false);
 			TFSexo.setColumns(10);
@@ -149,7 +180,7 @@ public class FrmUsuario {
 			TFEmail.setFont(new Font("Tahoma", Font.PLAIN, 14));
 			TFEmail.setEditable(false);
 			TFEmail.setColumns(10);
-			TFEmail.setBounds(704, 162, 310, 24);
+			TFEmail.setBounds(211, 226, 310, 24);
 			frame.getContentPane().add(TFEmail);
 			
 			TFTelefono = new JTextField(String.valueOf(usuario.getTelefono()));
@@ -160,10 +191,9 @@ public class FrmUsuario {
 			frame.getContentPane().add(TFTelefono);
 			
 			pwdContrasea = new JPasswordField(usuario.getContrasena());
-			pwdContrasea.setText("contrase\u00F1a");
 			pwdContrasea.setEditable(false);
 			pwdContrasea.setFont(new Font("Tahoma", Font.PLAIN, 14));
-			pwdContrasea.setBounds(704, 226, 310, 24);
+			pwdContrasea.setBounds(704, 192, 310, 24);
 			frame.getContentPane().add(pwdContrasea);
 			
 			//Label informativo
@@ -185,10 +215,11 @@ public class FrmUsuario {
 
 					public boolean isCellEditable(int rowIndex,int coluumnIndex) {return false;}
 					};
-					
+				
+				
 				model.setColumnIdentifiers(titulos);
 				model.addRow(new Object[] {"2","COD","JUEGO DE PS4","2020/02/10","PS4","2 mano"}); //ejemplo de campos
-				JTable table = new JTable();
+				table = new JTable();
 				table.setShowVerticalLines(false);
 				table.setGridColor(Color.white);
 				table.setForeground(new Color(0, 0, 0));
@@ -197,12 +228,13 @@ public class FrmUsuario {
 			    table.setFont(new Font("FreeSans", Font.ITALIC, 16));
 				table.setRowHeight(18);
 				scroll.setViewportView(table);
-				scroll.setBounds(173, 354, 852, 283);;
+				scroll.setBounds(173, 354, 852, 233);;
 				table.setBackground(Color.white);
+				table.getTableHeader().setReorderingAllowed(false);
 				frame.getContentPane().add(scroll);
 			
 			//Botones
-				JButton btnNuevaPubli = new JButton("NUEVA");
+				btnNuevaPubli = new JButton("NUEVA");
 				btnNuevaPubli.setBorder(UIManager.getBorder("Button.border"));
 				btnNuevaPubli.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 13));
 				btnNuevaPubli.setBounds(281, 276, 102, 51);
@@ -210,7 +242,7 @@ public class FrmUsuario {
 				btnNuevaPubli.setForeground(Color.WHITE);
 				frame.getContentPane().add(btnNuevaPubli);
 				
-				JButton btnEliminarPubli = new JButton("ELIMINAR");
+				btnEliminarPubli = new JButton("ELIMINAR");
 				btnEliminarPubli.setForeground(Color.WHITE);
 				btnEliminarPubli.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 13));
 				btnEliminarPubli.setBorder(UIManager.getBorder("Button.border"));
@@ -218,7 +250,7 @@ public class FrmUsuario {
 				btnEliminarPubli.setBounds(381, 276, 102, 51);
 				frame.getContentPane().add(btnEliminarPubli);
 				
-				JButton btnEditar = new JButton("EDITAR");
+				btnEditar = new JButton("EDITAR");
 				btnEditar.setForeground(Color.WHITE);
 				btnEditar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 12));
 				btnEditar.setBorder(UIManager.getBorder("Button.border"));
@@ -226,7 +258,7 @@ public class FrmUsuario {
 				btnEditar.setBounds(168, 0, 118, 60);
 				frame.getContentPane().add(btnEditar);
 				
-				JButton btnSolEliminar = new JButton("SOLICITAR ELIMINAR");
+				btnSolEliminar = new JButton("SOLICITAR ELIMINAR");
 				btnSolEliminar.setHideActionText(true);
 				btnSolEliminar.setHorizontalTextPosition(SwingConstants.CENTER);
 				btnSolEliminar.setForeground(Color.WHITE);
@@ -236,13 +268,129 @@ public class FrmUsuario {
 				btnSolEliminar.setBounds(283, 0, 181, 60);
 				frame.getContentPane().add(btnSolEliminar);
 				
+				btnGuardar = new JButton("GUARDAR");
+				btnGuardar.setForeground(Color.WHITE);
+				btnGuardar.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 12));
+				btnGuardar.setBorder(UIManager.getBorder("Button.border"));
+				btnGuardar.setBackground(new Color(139, 196, 68));
+				btnGuardar.setBounds(1083, 139, 118, 60);
+				btnGuardar.setVisible(false);
+				frame.getContentPane().add(btnGuardar);
+				
+				TFNombreP = new JTextField((String) null);
+				TFNombreP.setFont(new Font("Tahoma", Font.PLAIN, 14));
+				TFNombreP.setEditable(false);
+				TFNombreP.setColumns(10);
+				TFNombreP.setVisible(false);
+				TFNombreP.setBounds(318, 618, 135, 24);
+				frame.getContentPane().add(TFNombreP);
+				
+				TFDescP = new JTextField((String) null);
+				TFDescP.setFont(new Font("Tahoma", Font.PLAIN, 14));
+				TFDescP.setEditable(false);
+				TFDescP.setColumns(10);
+				TFDescP.setVisible(false);
+				TFDescP.setBounds(463, 618, 135, 24);
+				frame.getContentPane().add(TFDescP);
+				
+				TFFechaP = new JTextField((String) null);
+				TFFechaP.setFont(new Font("Tahoma", Font.PLAIN, 14));
+				TFFechaP.setEditable(false);
+				TFFechaP.setColumns(10);
+				TFFechaP.setVisible(false);
+				TFFechaP.setBounds(744, 618, 135, 24);
+				frame.getContentPane().add(TFFechaP);
+				
+				TFCategoriaP = new JTextField((String) null);
+				TFCategoriaP.setFont(new Font("Tahoma", Font.PLAIN, 14));
+				TFCategoriaP.setEditable(false);
+				TFCategoriaP.setColumns(10);
+				TFCategoriaP.setVisible(false);
+				TFCategoriaP.setBounds(889, 618, 135, 24);
+				frame.getContentPane().add(TFCategoriaP);
+				
+				TFEstadoP = new JTextField((String) null);
+				TFEstadoP.setFont(new Font("Tahoma", Font.PLAIN, 14));
+				TFEstadoP.setEditable(false);
+				TFEstadoP.setColumns(10);
+				TFEstadoP.setVisible(false);
+				TFEstadoP.setBounds(608, 618, 126, 24);
+				frame.getContentPane().add(TFEstadoP);
+				
 			//Actualizar tabla del usuario
 				actualizarTabla(usuario.getDni(),"dni");
 	}
-	
-	public void Eventos() {
+	/**
+	 * Función que almacena los eventos de la vista.
+	 */
+	public void eventos() {
+		//Evento: editar los campos del usuario
+			btnEditar.addMouseListener(new MouseAdapter() {
+				public void mouseClicked(MouseEvent e) {
+					editar = true;
+					nueva = true;
+					eliminar = false;
+					editarVista();
+					
+				
+				}
+			});
+			
+		//Evento: crear nueva publicacion
+		btnNuevaPubli.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				nueva = true;
+				editar = false;
+				eliminar = false;
+				editarVista();
+			
+			}
+		});
 		
+		//Evento: eliminar una publicación
+		btnEliminarPubli.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				nueva = false;
+				editar = false;
+				eliminar = true;
+				editarVista();
+				
+			}
+		});
+			
+		
+		//Evento: guardar los cambios
+			btnGuardar.addMouseListener(new MouseAdapter() {
+				public void mouseClicked(MouseEvent e) {
+					
+					if(editar) editar();
+					else if (nueva) {
+						nueva();
+						actualizarTabla(usuario.getDni(),"dni");
+					}else if(eliminar) {
+						int dialogResult = JOptionPane.showConfirmDialog (null, "Seguro que quieres eliminar la publicación?","ELIMINAR PUBLICACIÓN",JOptionPane.YES_NO_OPTION);
+						 if(dialogResult == JOptionPane.YES_OPTION) {
+							 eliminar(Integer.parseInt(String.valueOf(table.getValueAt(table.getSelectedRow(), 0))));
+						
+						 }
+						 actualizarTabla(usuario.getDni(),"dni");
+					}
+					
+					resetDiseño();
+					
+				
+				}
+			});
+			
+			//Evento: "enviar" solicitud de eliminación
+			btnSolEliminar.addMouseListener(new MouseAdapter() {
+				public void mouseClicked(MouseEvent e) {
+					solElimFichero();
+					
+				}
+			});
 	}
+	
 	/**
 	 * Función para actualizar la tabla.
 	 * @param x = dni
@@ -268,4 +416,228 @@ public class FrmUsuario {
 
 		 }	
 	}
+	/**
+	 * Función editar un usuario.
+	 */
+	public void editar() {
+		SQLUsuario sqlusuario = new SQLUsuario();
+		sqlusuario.editar(TFDni.getText(), String.valueOf(pwdContrasea.getPassword()), TFNombre.getText(), TFApellidos.getText(),fecha() , 
+				sexo(), TFEmail.getText(), Integer.parseInt(TFTelefono.getText()), false);
+		
+		
+	}
+	/**
+	 * Función para crear una nueva publicación
+	 */
+	public void nueva() {
+		SQLPublicacion sqlpubli = new SQLPublicacion();
+		sqlpubli.crear(new Publicacion(TFDni.getText(),TFNombreP.getText(),TFDescP.getText(), TFEstadoP.getText(),TFCategoriaP.getText()));
+		
+	}
+	/**
+	 * Función para eliminar una publicación.
+	 */
+	public void eliminar(int id) {		
+			SQLPublicacion sqlpubli = new SQLPublicacion();
+			sqlpubli.eliminar(id);
+			model.setRowCount(0);
+		
+	}
+	/**
+	 * Función que escribe en un fichero la "solicitud de eliminación".
+	 */
+	public void solElimFichero() {
+		//fichero donde escribir
+		FileWriter fichero = null;
+		try {
+
+			fichero = new FileWriter("./servidor/solElim.txt",true);
+
+			// Escribimos linea a linea en el fichero
+			fichero.write("Fecha solicitud: "+fechaSol()+" - DNI:" + usuario.getDni()+"\n");
+
+			fichero.close();
+			JOptionPane.showMessageDialog(null, "SOLICITUD ENVIADA. ");
+
+
+		} catch (Exception ex) {
+			System.out.println("ERROR AL ENVIAR LA SOLICITUD CONTACTE CON EL ADMINISTRADOR." + ex.getMessage());
+		}
+		
+	}
+	/**
+	 * Función para obtener la fecha actual.
+	 */
+	public String fechaSol() {
+		Calendar cal;
+		String sFecha;
+		
+		cal = Calendar.getInstance();
+		
+		sFecha = Integer.toString(cal.get(Calendar.YEAR))+"/"
+				+ Integer.toString(cal.get(Calendar.MONTH))+"/"
+				+ Integer.toString(cal.get(Calendar.DATE))+" ";
+		
+		return sFecha;
+	}
+
+	
+	/**
+	 * Función para devolver la fecha para guardar.
+	 * @return devuelve la fecha en formato yyyy/MM/dd para almacenar en la bbdd.
+	 */
+	public String fecha() {
+		
+		String pattern  = "yyyy/MM/dd";
+		DateFormat formatter = new SimpleDateFormat(pattern);
+		String fecha = formatter.format(calendarFechaNacimiento.getDate()).toString();
+		return fecha;
+		
+	}
+	
+	/**
+	 * Función para determinar el sexo que guardar.
+	 * @return char adecuado según el tipo de sexo seleccionado
+	 */
+	public char sexo() {
+		char sexo = 'M';
+		
+		if(comboBox.getSelectedItem().toString().equalsIgnoreCase("Mujer")) sexo = 'M';
+		else if(comboBox.getSelectedItem().toString().equalsIgnoreCase("Hombre")) sexo = 'H';
+		else if(comboBox.getSelectedItem().toString().equalsIgnoreCase("Otros")) sexo = 'O';
+		else sexo = '-';
+		
+		return sexo;
+		
+	}
+
+	/**
+	 * Función que habilita/deshabilita opciones al clicar el botón editar.
+	 */
+	public void editarVista() {
+		//activar y desactivar botones
+			btnEditar.setEnabled(false);
+			btnSolEliminar.setEnabled(false);
+			btnEliminarPubli.setEnabled(false);
+			btnNuevaPubli.setEnabled(false);
+			btnGuardar.setEnabled(true);
+			btnGuardar.setVisible(true);
+			
+			if(editar) {
+				//activar campos
+					TFNombre.setEditable(true);
+					TFApellidos.setEditable(true);
+					TFFechaNacimiento.setEditable(false);
+					TFFechaNacimiento.setVisible(false);
+					TFSexo.setVisible(false);
+					TFSexo.setEditable(false);
+					TFEmail.setEditable(true);
+					TFTelefono.setEditable(true);
+					pwdContrasea.setEditable(true);
+					table.setEnabled(false);
+					
+				
+				//Rellenar/elegir sexo
+					comboBox = new JComboBox<String>();
+					String[] opcionesSexo = {"Mujer","Hombre","Otros","No informar"};
+					comboBox.setModel(new javax.swing.DefaultComboBoxModel<>(opcionesSexo));
+					comboBox.setSelectedItem(TFSexo.getText()); //poner el sexo actual
+					comboBox.setBounds(704, 124, 150, 24);
+					comboBox.setVisible(true);
+					frame.getContentPane().add(comboBox);
+					
+				//Rellenar/elegir fecha de nacimiento
+					calendarFechaNacimiento = new JDateChooser("yyyy/MM/dd", "####/##/##", '_');
+					calendarFechaNacimiento.setLocale(new Locale("es"));
+					calendarFechaNacimiento.setDateFormatString("yyyy/MM/dd");
+					calendarFechaNacimiento.getCalendarButton().setFont(new Font("Tahoma", Font.PLAIN, 14));
+					calendarFechaNacimiento.setVisible(true);
+					calendarFechaNacimiento.setBounds(704, 158, 150, 24);
+					
+					Date date = null;
+					try {
+						date = new SimpleDateFormat("yyyy/MM/dd").parse(TFFechaNacimiento.getText());
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						JOptionPane.showConfirmDialog(null, "CONTACTE TECNICO BBDD:"+e.getMessage(), "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+					} 
+					//poner la fecha actual
+					calendarFechaNacimiento.setDate(date);
+					frame.getContentPane().add(calendarFechaNacimiento);
+					
+			} else if(nueva) {
+				TFNombreP.setEditable(true);
+				TFNombreP.setVisible(true);
+				TFDescP.setEditable(true);
+				TFDescP.setVisible(true);
+				TFFechaP.setVisible(true);
+				TFFechaP.setText("HOY");
+				TFCategoriaP.setEditable(true);
+				TFCategoriaP.setVisible(true);
+				TFEstadoP.setEditable(true);
+				TFEstadoP.setVisible(true);
+				
+			}
+	}
+	/**
+	 * Función para volver a las funcionalidades/diseño inicial.
+	 */
+	public void resetDiseño() {
+		
+			editar=false;
+			nueva = false;
+		
+		//activar y desactivar botones
+			btnEditar.setEnabled(true);
+			btnSolEliminar.setEnabled(true);
+			btnEliminarPubli.setEnabled(true);
+			btnNuevaPubli.setEnabled(true);
+			btnGuardar.setEnabled(false);
+			btnGuardar.setVisible(false);
+			
+		//activar campos
+			TFNombre.setEditable(false);
+			TFApellidos.setEditable(false);
+			TFFechaNacimiento.setEditable(false);
+			TFFechaNacimiento.setVisible(true);
+			TFSexo.setVisible(true);
+			TFSexo.setEditable(false);
+			TFEmail.setEditable(false);
+			TFTelefono.setEditable(false);
+			pwdContrasea.setEditable(false);
+			table.setEnabled(true);
+	
+			
+			
+		//Actualizar los datos del usuario
+			SQLUsuario sqlusu = new SQLUsuario();
+			this.usuario = sqlusu.consulta(usuario.getDni()).get(0);
+			TFDni.setText(usuario.getDni());
+			TFNombre.setText(usuario.getNombre());
+			TFApellidos.setText(usuario.getApellidos());
+			TFTelefono.setText(String.valueOf(usuario.getTelefono()));
+			TFEmail.setText(usuario.getEmail());
+			TFFechaNacimiento.setText(usuario.getFechaNacimiento());
+			if(usuario.getSexo() == 'M') TFSexo.setText("Mujer");
+			if(usuario.getSexo() == 'H') TFSexo.setText("Hombre");
+			if(usuario.getSexo() == 'O') TFSexo.setText("Otros");
+			if(usuario.getSexo() == '-') TFSexo.setText("-");
+			
+			
+		//Desaparecer parametros de la publicación nueva
+			TFNombreP.setEditable(false);
+			TFNombreP.setVisible(false);
+			TFDescP.setEditable(false);
+			TFDescP.setVisible(false);
+			TFFechaP.setVisible(false);
+			TFCategoriaP.setEditable(false);
+			TFCategoriaP.setVisible(false);
+			TFEstadoP.setEditable(false);
+			TFEstadoP.setVisible(false);
+			
+	}
+	
+	
+	
+	
 }

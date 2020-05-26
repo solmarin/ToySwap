@@ -106,13 +106,12 @@ public class FrmOAbierta {
 			frame.getContentPane().add(JLOAbierta);
 			
 			JTextPane TFAInformacion = new JTextPane();
-			TFAInformacion.setText("COMO FUNCIONA?\n	Una oferta abierta consiste en darle la posibilidad al otro usuario de eligir una de tus publicaciones a cambio de su publicación.\n	Esta tria por parte del otro usuario se realizará en el Chat.\n		Suerte con la oferta!\"");
+			TFAInformacion.setText("COMO FUNCIONA?\n\nUna oferta abierta consiste en darle la posibilidad al otro usuario de eligir una de tus publicaciones a cambio de su publicación.\n\nEsta tria por parte del otro usuario se realizará en el Chat.\n\n	Suerte con la oferta!\n\nBy Sol Marín");
 			TFAInformacion.setOpaque(false);
 			TFAInformacion.setFont(new Font("Tahoma", Font.PLAIN, 14));
 			TFAInformacion.setFocusable(false);
 			TFAInformacion.setEditable(false);
-			TFAInformacion.setText("COMO FUNCIONA?");
-			TFAInformacion.setBounds(178, 119, 870, 318);
+			TFAInformacion.setBounds(178, 183, 870, 254);
 			frame.getContentPane().add(TFAInformacion);
 			
 		//Label informativo 
