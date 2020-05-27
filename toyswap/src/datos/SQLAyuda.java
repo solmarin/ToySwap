@@ -13,7 +13,7 @@ import modelo.Ayuda;
 /**
  * Clase de consultas SQL entre la relación tabla bbdd ayudas - clase Ayuda. 
  * @author Sol Marín
- * @version 1
+ * @version 1.2
  *
  */
 public class SQLAyuda {

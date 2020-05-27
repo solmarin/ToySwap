@@ -4,11 +4,16 @@ import java.awt.Color;
 import java.awt.ComponentOrientation;
 import java.awt.EventQueue;
 import java.awt.Image;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 import controlador.FrmInicio;
+import datos.SQLAyuda;
+import modelo.Ayuda;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -17,33 +22,21 @@ import javax.swing.SwingConstants;
 /**
  * Clase para crear la pantalla de ayudas.
  * @author sol
- * @version 1
+ * @version 2
  */
 public class FrmAyuda {
 	//Declaración de variables globales
-		JFrame frame;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					FrmAyuda window = new FrmAyuda();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+		public JFrame frame;
+		private ArrayList<Ayuda> infoBBDD = null;
+		private JTextArea ManualesExtraida;
 
 	/**
 	 * Create the application.
 	 */
 	public FrmAyuda() {
+		infoBBDD = cargarDatos();
 		diseño();
+		
 	}
 
 	/**
@@ -93,18 +86,33 @@ public class FrmAyuda {
 			frame.getContentPane().add(JLContacto);
 			
 	  //Label donde se mostrará la información
-			JLabel JLInfoExtraida = new JLabel("Texto de muestra");
+			JLabel JLInfoExtraida = new JLabel(infoBBDD.get(1).toString());
 			JLInfoExtraida.setFont(new Font("Tahoma", Font.PLAIN, 14));
 			JLInfoExtraida.setVerticalAlignment(SwingConstants.TOP);
 			JLInfoExtraida.setBounds(107, 565, 1058, 83);
 			frame.getContentPane().add(JLInfoExtraida);
 			
-			JLabel JLManualesExtraida = new JLabel("Texto de muestra");
-			JLManualesExtraida.setVerticalAlignment(SwingConstants.TOP);
-			JLManualesExtraida.setFont(new Font("Tahoma", Font.PLAIN, 14));
-			JLManualesExtraida.setBounds(107, 154, 1058, 354);
-			frame.getContentPane().add(JLManualesExtraida);
-			
+			ManualesExtraida = new JTextArea(infoBBDD.get(0).toString());
+			ManualesExtraida.setLineWrap(true); //salto de linea automatico
+			ManualesExtraida.setWrapStyleWord(true); // estilo del salto de linea: no separar palabras
+			ManualesExtraida.setFont(new Font("Tahoma", Font.PLAIN, 14));
+			frame.getContentPane().add(ManualesExtraida);
+	//Scroll
+			JScrollPane scroll = new JScrollPane();
+			scroll.setFont(new Font("Tahoma", Font.PLAIN, 14));
+			scroll.setBackground(Color.WHITE);
+			scroll.setViewportView(ManualesExtraida);
+			scroll.setBounds(105, 150, 1060, 354);
+			frame.getContentPane().add(scroll);
+	}
+	/**
+	 * Función para obtener los datos/información para mostrar.
+	 * @return un array de Ayuda
+	 */
+	public ArrayList<Ayuda> cargarDatos() {
+		SQLAyuda sqlayuda = new SQLAyuda();
+		return sqlayuda.consultar();
+		
 	}
 
 }

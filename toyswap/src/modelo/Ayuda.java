@@ -2,7 +2,7 @@ package modelo;
 /**
  * Clase para definir la estructura de las ayudas.
  * @author Sol Marín
- * @version 1
+ * @version 1.2
  *
  */
 public class Ayuda {
@@ -40,7 +40,7 @@ public class Ayuda {
 		}
 		@Override
 		public String toString() {
-			return "Ayuda [id=" + id + ", nombre=" + nombre + ", descripcion=" + descripcion + "]";
+			return this.descripcion;
 		}
 		
 }

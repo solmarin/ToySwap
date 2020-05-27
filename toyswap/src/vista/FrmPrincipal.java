@@ -164,7 +164,7 @@ public class FrmPrincipal {
 		    table.setFont(new Font("FreeSans", Font.ITALIC, 16));
 			table.setRowHeight(18);
 			scroll.setViewportView(table);
-			scroll.setBounds(130, 150, 992, 382);;
+			scroll.setBounds(130, 150, 992, 382);
 			table.setBackground(Color.white);
 			table.getTableHeader().setReorderingAllowed(false);
 			frame.getContentPane().add(scroll);
