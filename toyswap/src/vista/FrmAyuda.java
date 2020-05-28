@@ -2,7 +2,6 @@ package vista;
 
 import java.awt.Color;
 import java.awt.ComponentOrientation;
-import java.awt.EventQueue;
 import java.awt.Image;
 import java.util.ArrayList;
 

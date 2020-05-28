@@ -30,7 +30,7 @@ public class SQLAyuda {
 			try {
 
 				Class.forName("org.sqlite.JDBC");
-				c = DriverManager.getConnection("jdbc:sqlite:servidor/toyswap.db");
+				c = DriverManager.getConnection("jdbc:sqlite:toyswap.db");
 				System.out.println("EXITO AL CONECTAR A LA BBDD");
 
 			} catch (Exception e) {

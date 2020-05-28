@@ -7,6 +7,7 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -14,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Scanner;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -43,7 +45,7 @@ import javax.swing.JTable;
 /**
  * Clase para definir la estructura de la vista del perfil del usuario.
  * @author Sol Marín
- * @version 3
+ * @version 3.1
  *
  */
 public class FrmUsuario {
@@ -368,12 +370,16 @@ public class FrmUsuario {
 						nueva();
 						actualizarTabla(usuario.getDni(),"dni");
 					}else if(eliminar) {
-						int dialogResult = JOptionPane.showConfirmDialog (null, "Seguro que quieres eliminar la publicación?","ELIMINAR PUBLICACIÓN",JOptionPane.YES_NO_OPTION);
-						 if(dialogResult == JOptionPane.YES_OPTION) {
-							 eliminar(Integer.parseInt(String.valueOf(table.getValueAt(table.getSelectedRow(), 0))));
-						
-						 }
-						 actualizarTabla(usuario.getDni(),"dni");
+						if(table.getSelectedRow() >0) {
+							int dialogResult = JOptionPane.showConfirmDialog (null, "Seguro que quieres eliminar la publicación?","ELIMINAR PUBLICACIÓN",JOptionPane.YES_NO_OPTION);
+							 if(dialogResult == JOptionPane.YES_OPTION) {
+								 eliminar(Integer.parseInt(String.valueOf(table.getValueAt(table.getSelectedRow(), 0))));
+							
+							 }
+							 actualizarTabla(usuario.getDni(),"dni");
+						}else {
+							JOptionPane.showConfirmDialog(null, "INFO: NO HAY NINGUNA PUBLICACIÓN PARA ELIMINAR.", "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+						}
 					}
 					
 					resetDiseño();
@@ -420,9 +426,21 @@ public class FrmUsuario {
 	 * Función editar un usuario.
 	 */
 	public void editar() {
-		SQLUsuario sqlusuario = new SQLUsuario();
-		sqlusuario.editar(TFDni.getText(), String.valueOf(pwdContrasea.getPassword()), TFNombre.getText(), TFApellidos.getText(),fecha() , 
-				sexo(), TFEmail.getText(), Integer.parseInt(TFTelefono.getText()), false);
+		
+		if(!String.valueOf(pwdContrasea.getPassword()).isEmpty() && !String.valueOf(pwdContrasea.getPassword()).isBlank() 
+			&&!TFNombre.getText().isBlank() && !TFNombre.getText().isEmpty() && !TFApellidos.getText().isBlank() && !TFApellidos.getText().isEmpty()
+			&&!fecha().isEmpty() &&!fecha().isBlank()  && !String.valueOf(sexo()).isEmpty() && !String.valueOf(sexo()).isBlank()  
+			&&!TFEmail.getText().isEmpty() && !TFEmail.getText().isBlank() && !TFTelefono.getText().isEmpty() && !TFTelefono.getText().isBlank()) {
+			
+			SQLUsuario sqlusuario = new SQLUsuario();
+			sqlusuario.editar(TFDni.getText(), String.valueOf(pwdContrasea.getPassword()), TFNombre.getText(), TFApellidos.getText(),fecha() , 
+					sexo(), TFEmail.getText(), Integer.parseInt(TFTelefono.getText()), false);
+			
+		}else {
+			JOptionPane.showConfirmDialog(null, "ERROR: DATOS INCORRECTOS.\nComprouebe que todos los campos estan rellenos.\n"
+					+ "Si el error persiste, contacte con el administrador.", "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+		}
+		
 		
 		
 	}
@@ -430,8 +448,18 @@ public class FrmUsuario {
 	 * Función para crear una nueva publicación
 	 */
 	public void nueva() {
-		SQLPublicacion sqlpubli = new SQLPublicacion();
-		sqlpubli.crear(new Publicacion(TFDni.getText(),TFNombreP.getText(),TFDescP.getText(), TFEstadoP.getText(),TFCategoriaP.getText()));
+		
+		if(!TFDni.getText().isEmpty() && !TFNombreP.getText().isEmpty() && !TFDescP.getText().isEmpty() && !TFEstadoP.getText().isEmpty() &&
+			!TFCategoriaP.getText().isEmpty() && !TFDni.getText().isBlank() && !TFNombreP.getText().isBlank() && !TFDescP.getText().isBlank() 
+			&& !TFEstadoP.getText().isBlank() && !TFCategoriaP.getText().isBlank()) {
+			
+			SQLPublicacion sqlpubli = new SQLPublicacion();
+			sqlpubli.crear(new Publicacion(TFDni.getText(),TFNombreP.getText(),TFDescP.getText(), TFEstadoP.getText(),TFCategoriaP.getText()));	
+		}else {
+			JOptionPane.showConfirmDialog(null, "ERROR: DATOS INCORRECTOS.\nComprouebe que todos los campos estan rellenos.\n"
+					+ "Si el error persiste, contacte con el administrador.", "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+
+		}
 		
 	}
 	/**
@@ -448,20 +476,37 @@ public class FrmUsuario {
 	 */
 	public void solElimFichero() {
 		//fichero donde escribir
-		FileWriter fichero = null;
+		FileReader fichero = null;
+	    Scanner entrada = null;
+	    Boolean encontrado = false;
 		try {
 
-			fichero = new FileWriter("./servidor/solElim.txt",true);
-
-			// Escribimos linea a linea en el fichero
-			fichero.write("Fecha solicitud: "+fechaSol()+" - DNI:" + usuario.getDni()+"\n");
+			fichero = new FileReader("solElim.txt");
+			
+			entrada = new Scanner(fichero);
+			
+			while (entrada.hasNext() && !encontrado) { 
+                if (entrada.nextLine().contains(usuario.getDni()))  encontrado = true;
+            }
+			
+            if(encontrado){ 
+				JOptionPane.showMessageDialog(null, "Ya tiene una solicitud en proceso.\nEstamos trabajando en ello.\nGracias.");
+                
+            }else {
+            	FileWriter ficheroEscribir = new FileWriter("solElim.txt",true);
+				// Escribimos linea a linea en el fichero
+				ficheroEscribir.write("Fecha solicitud: "+fechaSol()+" - DNI:" + usuario.getDni()+"\n");
+				ficheroEscribir.close();
+				JOptionPane.showMessageDialog(null, "SOLICITUD ENVIADA. ");
+            }
 
 			fichero.close();
-			JOptionPane.showMessageDialog(null, "SOLICITUD ENVIADA. ");
+			
 
 
 		} catch (Exception ex) {
-			System.out.println("ERROR AL ENVIAR LA SOLICITUD CONTACTE CON EL ADMINISTRADOR." + ex.getMessage());
+			JOptionPane.showConfirmDialog(null, "CONTACTE TECNICO BBDD: ERROR AL ENVIAR LA SOLICITUD CONTACTE CON EL ADMINISTRADOR."+ex.getMessage(), "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+
 		}
 		
 	}

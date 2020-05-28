@@ -2,7 +2,6 @@ package vista;
 
 import java.awt.Color;
 import java.awt.ComponentOrientation;
-import java.awt.EventQueue;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,6 +14,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 import controlador.FrmInicio;
 import datos.SQLUsuario;
@@ -34,7 +34,7 @@ import javax.swing.JComboBox;
 /**
  * Clase para definir el diseño de la ventana para registrarse.
  * @author Sol Marín
- * @version 2
+ * @version 2.2
  *
  */
 public class FrmRegistrar {
@@ -51,21 +51,6 @@ public class FrmRegistrar {
 		private JComboBox<String> comboBox;
 
 
-		/**
-		 * Launch the application.
-		 */
-		public static void main(String[] args) {
-			EventQueue.invokeLater(new Runnable() {
-				public void run() {
-					try {
-						FrmRegistrar window = new FrmRegistrar();
-						window.frame.setVisible(true);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-			});
-		}
 	/**
 	 * Create the application.
 	 */
@@ -232,11 +217,18 @@ public class FrmRegistrar {
 		//Evento: crear un nuevo usuario
 		btnRegistrar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-							
-				//consulta sql para generar el nuevo usuario
-				SQLUsuario sqlusuario = new SQLUsuario();
-				sqlusuario.crear(new Usuario(TFDni.getText(),String.valueOf(passwordField.getPassword()),TFNombre.getText(),TFApellidos.getText(),
-						fecha(),sexo() ,TFEmail.getText(),Integer.parseInt(TFTelefono.getText()),false));
+				if(TFDni.getText().length() == 9 && !String.valueOf(passwordField.getPassword()).isEmpty() && !String.valueOf(passwordField.getPassword()).isBlank() 
+						&&!TFNombre.getText().isBlank() && !TFNombre.getText().isEmpty() && !TFApellidos.getText().isBlank() && !TFApellidos.getText().isEmpty()
+						&&!fecha().isEmpty() &&!fecha().isBlank()  && !String.valueOf(sexo()).isEmpty() && !String.valueOf(sexo()).isBlank()  
+						&&!TFEmail.getText().isEmpty() && !TFEmail.getText().isBlank() && !TFTelefono.getText().isEmpty() &&  Integer.parseInt(TFTelefono.getText()) > 99999999  && !TFTelefono.getText().isBlank()) {
+					//consulta sql para generar el nuevo usuario
+					SQLUsuario sqlusuario = new SQLUsuario();
+					sqlusuario.crear(new Usuario(TFDni.getText(),String.valueOf(passwordField.getPassword()),TFNombre.getText(),TFApellidos.getText(),
+							fecha(),sexo() ,TFEmail.getText(),Integer.parseInt(TFTelefono.getText()),false));
+				}else {
+					JOptionPane.showConfirmDialog(null, "ERROR: DATOS INCORRECTOS.\nComprouebe que todos los campos estan rellenos.\n"
+							+ "Si el error persiste, contacte con el administrador.", "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+				}
 				
 			}
 		});

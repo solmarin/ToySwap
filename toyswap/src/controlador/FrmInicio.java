@@ -24,6 +24,7 @@ import vista.FrmRegistrar;
 
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 
 /**
  * Clase para crear la pantalla de login. 
@@ -38,6 +39,7 @@ public class FrmInicio {
 		private JPasswordField passwordField;
 		private JButton btnEntrar;
 		private JButton btnRegistrar;
+		private JCheckBox chckContra;
 
 	/**
 	 * Launch the application.
@@ -102,6 +104,14 @@ public class FrmInicio {
 			frame.getContentPane().add(TFUsuario);
 			TFUsuario.setColumns(10);
 			
+		//Check para mostrar la contraseña
+			chckContra = new JCheckBox();
+			chckContra.setText("Mostrar");
+			chckContra.setOpaque(false);
+			chckContra.setBounds(289, 113, 91, 21);
+			frame.getContentPane().add(chckContra);
+			
+			
 		//Campos para rellenar
 			JLabel JLContraseña = new JLabel("Contrase\u00F1a");
 			JLContraseña.setForeground(new Color(139, 196, 68));
@@ -154,6 +164,15 @@ public class FrmInicio {
 					
 				}
 			});
+		//Evento: controlar si mostrar la contraseña o no
+		chckContra.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(chckContra.isSelected())passwordField.setEchoChar((char)0);
+				else {
+					passwordField.setEchoChar('*');
+				}
+			}
+		});
 	}
 	
 	/**
