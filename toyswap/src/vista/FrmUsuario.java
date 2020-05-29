@@ -45,7 +45,7 @@ import javax.swing.JTable;
 /**
  * Clase para definir la estructura de la vista del perfil del usuario.
  * @author Sol Marín
- * @version 3.1
+ * @version 3.2
  *
  */
 public class FrmUsuario {
@@ -449,12 +449,14 @@ public class FrmUsuario {
 	 */
 	public void nueva() {
 		
-		if(!TFDni.getText().isEmpty() && !TFNombreP.getText().isEmpty() && !TFDescP.getText().isEmpty() && !TFEstadoP.getText().isEmpty() &&
+		if(usuario.getDni().length()!=9 || Character.isDigit(usuario.getDni().charAt(8))) {
+			JOptionPane.showConfirmDialog(null, "DATOS INCORRECTOS.\nIntroduzca un dni correcto (8 digitos y 1 letra).\nEjemplo: 12345678A", "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
+		}else if(!TFNombreP.getText().isEmpty() && !TFDescP.getText().isEmpty() && !TFEstadoP.getText().isEmpty() &&
 			!TFCategoriaP.getText().isEmpty() && !TFDni.getText().isBlank() && !TFNombreP.getText().isBlank() && !TFDescP.getText().isBlank() 
 			&& !TFEstadoP.getText().isBlank() && !TFCategoriaP.getText().isBlank()) {
 			
 			SQLPublicacion sqlpubli = new SQLPublicacion();
-			sqlpubli.crear(new Publicacion(TFDni.getText(),TFNombreP.getText(),TFDescP.getText(), TFEstadoP.getText(),TFCategoriaP.getText()));	
+			sqlpubli.crear(new Publicacion(usuario.getDni(),TFNombreP.getText(),TFDescP.getText(), TFEstadoP.getText(),TFCategoriaP.getText()));	
 		}else {
 			JOptionPane.showConfirmDialog(null, "ERROR: DATOS INCORRECTOS.\nComprouebe que todos los campos estan rellenos.\n"
 					+ "Si el error persiste, contacte con el administrador.", "Warning!", JOptionPane.DEFAULT_OPTION,JOptionPane.ERROR_MESSAGE);
